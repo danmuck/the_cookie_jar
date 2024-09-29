@@ -1,4 +1,4 @@
-package plugin
+package util
 
 type Plugin interface {
 	load() error

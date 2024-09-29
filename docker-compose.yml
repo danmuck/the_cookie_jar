@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - '8080:6669'
+    environment:
+      WAIT_HOSTS: database:27017
+
+  database:
+    image: mongo:4.2.5
+    ports:
+      - '27017:27017'

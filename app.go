@@ -1,8 +1,8 @@
 package main
 
-// import "github.com/gin-gonic/gin"
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -41,6 +41,13 @@ func main() {
 
 	fmt.Println("\nServer connecting .. ctrl-c to quit\n ")
 	// Listen and Server in 0.0.0.0:8080
-	app.Router.Run(":8080")
-	// ctrl-c to quit
+	app.Router.Run(":6669")
+
+	database, err := sandbox.NewDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
+	db := database.Client.Database("the_cookie_jar")
+	fmt.Println("Database: ", db.Name())
+
 }

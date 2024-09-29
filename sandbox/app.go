@@ -39,5 +39,9 @@ func NewApp(opts ...string) *App {
 		Router: gin.Default(),
 	}
 
+	err := app.Router.SetTrustedProxies(nil)
+	if err != nil {
+		panic(err)
+	}
 	return app
 }
