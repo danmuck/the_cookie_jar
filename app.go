@@ -41,7 +41,12 @@ func main() {
 
 	fmt.Println("\nServer connecting .. ctrl-c to quit\n ")
 	// Listen and Server in 0.0.0.0:8080
-	app.Router.Run(":6669")
+	go func(a *sandbox.App) {
+		err := a.Router.Run(":6669")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(app)
 
 	database, err := sandbox.NewDatabase()
 	if err != nil {

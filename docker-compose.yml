@@ -7,6 +7,6 @@ services:
       WAIT_HOSTS: database:27017
 
   database:
-    image: mongo:4.2.5
+    image: mongo
     ports:
       - '27017:27017'

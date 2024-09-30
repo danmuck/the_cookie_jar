@@ -5,7 +5,7 @@ WORKDIR /root
 
 COPY . .
 
-# RUN go mod download
+RUN go mod download
 
 RUN go build -o the_cookie_jar
 EXPOSE 8080
