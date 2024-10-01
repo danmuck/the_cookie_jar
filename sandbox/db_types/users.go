@@ -5,8 +5,7 @@ import "github.com/google/uuid"
 
 // go naming conventions make anything starting with lowercase letter --> private
 type User struct {
-	ID string `bson:"_id"`
-	// id       uuid.UUID `bson:"_id"`
+	ID       string  `bson:"_id"`
 	Username string  `bson:"username"`
 	Org      string  `bson:"org"`
 	Status   *status `bson:"status,omitempty"`

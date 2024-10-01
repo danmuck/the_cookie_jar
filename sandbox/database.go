@@ -23,7 +23,6 @@ type Database struct {
 func (db *Database) UpdateUser(user db_types.User) {
 
 	db_ := db.Client.Database("the_cookie_jar")
-	fmt.Println("Database: ", db_.Name())
 	db_.CreateCollection(context.TODO(), "users")
 	users := db_.Collection("users")
 

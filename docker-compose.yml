@@ -6,6 +6,7 @@ services:
       - '8080:6669'
     environment:
       WAIT_HOSTS: database:27017
+      GOCACHE: /.go-build/
 
   database:
     container_name: "database_m"

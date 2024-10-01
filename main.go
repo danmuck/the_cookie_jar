@@ -17,7 +17,7 @@ func main() {
 	new_user := db_types.NewUser("Big")
 	var tmp int = 12
 
-	fmt.Fprintf(os.Stderr, "\n\nSup, %s --%s age: %d \n\n", new_user.GetUsername(), new_user.GetStatus_String(), tmp)
+	fmt.Fprintf(os.Stdout, "\n\nSup, %s --%s age: %d \n\n", new_user.GetUsername(), new_user.GetStatus_String(), tmp)
 	fmt.Println("Using goroutines, iterate the bytes of [new_user.id] and print them ..\n .. they are indexed in the order the goroutines were created .. ")
 
 	var wg sync.WaitGroup
@@ -46,16 +46,25 @@ func main() {
 	go server.Serve()
 
 	test_users := []string{"Dan M.", "Michael R.", "Michael Y.", "Saqib M.", "Cordell H."}
+	other_users := []string{"Guest", "Professor", "TA", "Admin", "Student"}
 	for {
 
 		i := int64(rand.Intn(len(test_users)))
 		rs := test_users[i]
 		maker := *db_types.NewUser(rs)
-		fmt.Printf(">> waiting to insert random maker (%v : %v : %v) \n>> .. ctrl-c to quit .. \n",
+		fmt.Printf(">> waiting to insert random maker (%v with %v: \"%v\") \n>> .. ctrl-c to quit .. \n",
 			maker.GetUsername(), maker.Org, maker.GetStatus_String())
 
-		time.Sleep(5 * time.Second)
-		server.DB_AddUser(maker)
+		time.Sleep(10 * time.Second)
+		err = server.DB_AddUser(maker)
+		if err != nil {
+			fmt.Printf(">> error: %v \n", err.Error())
+
+			i = int64(rand.Intn(len(other_users)))
+			rs = other_users[i]
+			other := *db_types.NewUser(rs)
+			server.DB_AddUser(other)
+		}
 	}
 
 }

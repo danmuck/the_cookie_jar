@@ -1,14 +1,13 @@
 FROM golang:latest
 
-ENV HOME /root
+ENV HOME=/root
 WORKDIR /root
 
 COPY . .
-# RUN go mod download
 
 # https://docs.docker.com/build/cache/optimize/
-ENV GOCACHE=/root/.cache/go-build
-RUN --mount=type=cache,target="/root/.cache/go-build" \
+
+RUN --mount=type=cache,target=GOCACHE \
     go build -o the_cookie_jar
 
 EXPOSE 8080
