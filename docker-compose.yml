@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: "cookie_lms"
     build: .
     ports:
       - '8080:6669'
@@ -7,6 +8,7 @@ services:
       WAIT_HOSTS: database:27017
 
   database:
+    container_name: "database_m"
     image: mongo
     ports:
       - '27017:27017'

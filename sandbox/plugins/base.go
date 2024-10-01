@@ -1,4 +1,4 @@
-package sandbox
+package plugins
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func (a *App) GetInfo() string {
 	return fmt.Sprintf("name: %s \nversion: %s \n", a.name, a.version)
 }
 
-func NewApp(opts ...string) *App {
+func NewApp(r *gin.Engine, opts ...string) *App {
 	// args are a slice of strings since go does not implement optional args
 	// access them by index
 	if len(opts) > 2 {
