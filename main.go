@@ -35,7 +35,7 @@ func main() {
 
 	// sleep to wait for the goroutines to finish
 	// time.Sleep(2 * time.Second)
-	fmt.Println("id: ", new_user.GetId())
+	fmt.Println("new_user_id: ", new_user.GetId())
 
 	fmt.Println("\nServer connecting .. \n ")
 	server, err := sandbox.RunServer("test_org_key")
@@ -47,12 +47,15 @@ func main() {
 
 	test_users := []string{"Dan M.", "Michael R.", "Michael Y.", "Saqib M.", "Cordell H."}
 	for {
-		fmt.Println(">> waiting to insert random maker .. ctrl-c to quit")
-		time.Sleep(5 * time.Second)
 
 		i := int64(rand.Intn(len(test_users)))
 		rs := test_users[i]
-		server.DB_AddUser(*db_types.NewUser(rs))
+		maker := *db_types.NewUser(rs)
+		fmt.Printf(">> waiting to insert random maker (%v : %v : %v) \n>> .. ctrl-c to quit .. \n",
+			maker.GetUsername(), maker.Org, maker.GetStatus_String())
+
+		time.Sleep(5 * time.Second)
+		server.DB_AddUser(maker)
 	}
 
 }
