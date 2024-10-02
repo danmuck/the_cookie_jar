@@ -1,52 +1,28 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/danmuck/the_cookie_jar/api/controllers"
 	"github.com/danmuck/the_cookie_jar/api/middleware"
 	"github.com/gin-gonic/gin"
 )
 
-func wd() {
-	// Get the current working directory
-	dir, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Error getting current directory:", err)
-		return
-	}
-
-	fmt.Println("Current Directory:", dir)
-
-	// Walk through the directory and print the structure
-	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		// Print the file or directory
-		fmt.Println(path)
-		return nil
-	})
-
-	if err != nil {
-		fmt.Println("Error walking the directory:", err)
-	}
-}
 func ServeHTML(router *gin.Engine) {
-	// wd()
 	router.LoadHTMLGlob("/root/public/templates/*")
 	router.GET("/users/posts", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Posts",
+			"title":     "User Posts [tmp]",
+			"sub_title": "Some Recent Post Maybe",
+			"body":      "Some post text from a user that was in their recent post",
 		})
 	})
-	router.GET("/users/info", func(c *gin.Context) {
+	router.GET("/users/info/:username", func(c *gin.Context) {
+		username := c.Param("username")
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Info",
+			"title":     "User Info",
+			"sub_title": username,
+			"body":      "Some user info.",
 		})
 	})
 }
