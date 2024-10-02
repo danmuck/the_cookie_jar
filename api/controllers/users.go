@@ -8,7 +8,6 @@ import (
 	"github.com/danmuck/the_cookie_jar/api/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
-	// "go.mongodb.org/mongo-driver/mongo"
 )
 
 func POST_user(c *gin.Context) {
@@ -24,8 +23,7 @@ func GET_username(c *gin.Context) {
 	o := fmt.Sprintf("User: %v", username)
 
 	// logic to look up user from mongodb
-	client := connectMongoDB()
-	coll := client.Database("the_cookie_jar").Collection("users")
+	coll := get_collection("users")
 	filter := bson.M{"username": username}
 
 	var result models.User

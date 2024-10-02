@@ -166,7 +166,7 @@ func main() {
 
 	go server.Serve()
 
-	test_users := []string{"Dan M.", "Michael R.", "Michael Y.", "Saqib M.", "Cordell H."}
+	test_users := []string{"dan_m", "michael_r", "michael_ys", "saqib_m", "cordell_h"}
 	other_users := []string{"Guest", "Professor", "TA", "Admin", "Student"}
 	for {
 

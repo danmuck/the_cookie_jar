@@ -13,6 +13,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+func get_collection(coll string) *mongo.Collection {
+	client := connectMongoDB()
+	collection := client.Database("the_cookie_jar").Collection(coll)
+	return collection
+}
+
 func connectMongoDB() *mongo.Client {
 
 	err := godotenv.Load(".env")
@@ -39,14 +45,13 @@ func connectMongoDB() *mongo.Client {
 		panic(fmt.Errorf("failed to ping to database: %v", err))
 	}
 
-	fmt.Printf("\n\n\n uri: %v ", uri)
-	fmt.Printf("\nPinged your deployment. You successfully connected to MongoDB! %v\n\n ", uri)
-
-	fmt.Printf("%v Created", name)
+	fmt.Printf(">> [db] Pinged your deployment. You successfully connected to MongoDB! %v \n", uri)
+	fmt.Printf(">> [db] %v connected", name)
 
 	return client
 }
 
+// Garbage
 func PingPong(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
