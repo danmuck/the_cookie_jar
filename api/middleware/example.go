@@ -45,6 +45,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 	}
 }
+
 func isAuthenticated(c *gin.Context) bool {
 	fmt.Println(">> [middleware] checking isAuthenticated .. ")
 	for k, v := range c.Keys {

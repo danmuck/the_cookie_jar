@@ -33,6 +33,7 @@ func POST_user(c *gin.Context) {
 		})
 		return
 	}
+
 	c.JSON(http.StatusBadRequest, gin.H{"error": "User exists."})
 }
 
