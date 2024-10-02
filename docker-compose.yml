@@ -1,0 +1,15 @@
+services:
+  app:
+    container_name: "cookie_lms"
+    build: .
+    ports:
+      - '8080:6669'
+    environment:
+      WAIT_HOSTS: database:27017
+      GOCACHE: /.go-build/
+
+  database:
+    container_name: "database_m"
+    image: mongo
+    ports:
+      - '27017:27017'
