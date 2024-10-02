@@ -9,7 +9,6 @@ import (
 )
 
 func ServeHTML_demo(router *gin.Engine) {
-	router.LoadHTMLGlob("/root/public/templates/*")
 	router.GET("/users/posts", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
 			"title":     "User Posts [tmp]",
@@ -28,14 +27,18 @@ func ServeHTML_demo(router *gin.Engine) {
 }
 
 func BaseRouter() *gin.Engine {
+	// init router
 	router := gin.Default()
+	// load templates (will error if none exist at path)
+	router.LoadHTMLGlob("/root/public/templates/*")
 
 	go ServeHTML_demo(router)
 
 	// Public routes
-	public := router.Group("/users")
+	public := router.Group("/")
 	public.Use(middleware.Logger())
 	{
+		public.GET("/", controllers.Root)
 		public.POST("/register", controllers.PingPong)
 		public.POST("/login", controllers.PingPong)
 	}
@@ -43,7 +46,7 @@ func BaseRouter() *gin.Engine {
 	protected := router.Group("/users")
 	protected.Use(middleware.AuthMiddleware())
 	{
-		protected.GET("/", controllers.Root)
+		protected.GET("/", controllers.PingPong)
 		protected.POST("/:username", controllers.POST_user)
 		protected.GET("/:username", controllers.GET_username)
 		protected.PUT("/:username", controllers.Root)

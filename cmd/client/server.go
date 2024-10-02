@@ -61,22 +61,18 @@ func main() {
 
 	test_users := []string{"dan_m", "michael_r", "michael_ys", "saqib_m", "cordell_h"}
 	other_users := []string{"Guest", "Professor", "TA", "Admin", "Student"}
+
 	for {
+		time.Sleep(10 * time.Second)
 
 		i := int64(rand.Intn(len(test_users)))
 		rs := test_users[i]
-		// maker := *models.NewUser(rs)
 		path := fmt.Sprintf("http://localhost:6669/users/%s", rs)
 		request, _ := http.NewRequest("POST", path, nil)
 		client := &http.Client{}
 		_, err = client.Do(request)
-		// fmt.Printf(">> waiting to insert random maker (%v with %v: \"%v\") \n>> .. ctrl-c to quit .. \n",
-		// 	maker.GetUsername(), maker.Org, maker.GetStatus_String())
-
-		time.Sleep(10 * time.Second)
 
 		if err != nil {
-			// fmt.Printf(">> error: %v \n", err.Error())
 
 			i = int64(rand.Intn(len(other_users)))
 			rs = other_users[i]
@@ -87,8 +83,6 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-
 		}
 	}
-
 }

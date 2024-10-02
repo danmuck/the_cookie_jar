@@ -3,11 +3,9 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"os"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -48,15 +46,4 @@ func connectMongoDB() (*mongo.Client, string) {
 	fmt.Printf(">> [db] Pinged your deployment. You successfully connected to MongoDB! %v \n", uri)
 
 	return client, name
-}
-
-// Garbage
-func PingPong(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
-}
-
-func Root(c *gin.Context) {
-	username := c.Param("username")
-	o := fmt.Sprintf("User: %v", username)
-	c.String(http.StatusOK, o)
 }

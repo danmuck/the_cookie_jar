@@ -12,7 +12,7 @@ import (
 
 func POST_user(c *gin.Context) {
 	username := c.Param("username")
-	o := fmt.Sprintf("User: %v", username)
+	o := fmt.Sprintf("search_param:username: %v", username)
 
 	var user *models.User = models.NewUser(username)
 	var result *models.User
@@ -29,7 +29,9 @@ func POST_user(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "User added successfully",
 			"who":     o,
-			"user":    user,
+			"type":    "POST",
+
+			"user": user,
 		})
 		return
 	}
@@ -43,7 +45,7 @@ func DEL_user(c *gin.Context) {
 
 func GET_username(c *gin.Context) {
 	username := c.Param("username")
-	o := fmt.Sprintf("User: %v", username)
+	o := fmt.Sprintf("search_param:username: %v", username)
 
 	// logic to look up user from mongodb
 	coll := get_collection("users")
@@ -59,6 +61,7 @@ func GET_username(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User found successfully",
 		"who":     o,
+		"type":    "GET",
 		"user":    result,
 	})
 }
