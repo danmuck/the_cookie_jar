@@ -32,7 +32,7 @@ type Database struct {
 	timeout time.Duration
 }
 
-func (db *Database) UpdateUser(user models.User) {
+func (db *Database) InsertUser(user models.User) {
 	db_ := db.Client.Database(db.name)
 	db_.CreateCollection(context.TODO(), "users")
 	users := db_.Collection("users")
@@ -50,7 +50,7 @@ func (db *Database) LookupUser(username string) *models.User {
 	err := coll.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			db.UpdateUser(result)
+			db.InsertUser(result)
 			return &result
 		}
 		return nil
@@ -130,7 +130,7 @@ func (s *Server) db_AddUser(user models.User) error {
 	err := coll.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			s.db.UpdateUser(user)
+			s.db.InsertUser(user)
 			return nil
 		}
 		return err

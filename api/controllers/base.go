@@ -14,12 +14,12 @@ import (
 )
 
 func get_collection(coll string) *mongo.Collection {
-	client := connectMongoDB()
-	collection := client.Database("the_cookie_jar").Collection(coll)
+	client, db := connectMongoDB()
+	collection := client.Database(db).Collection(coll)
 	return collection
 }
 
-func connectMongoDB() *mongo.Client {
+func connectMongoDB() (*mongo.Client, string) {
 
 	err := godotenv.Load(".env")
 	uri := os.Getenv("MONGODB_URI")
@@ -46,9 +46,8 @@ func connectMongoDB() *mongo.Client {
 	}
 
 	fmt.Printf(">> [db] Pinged your deployment. You successfully connected to MongoDB! %v \n", uri)
-	fmt.Printf(">> [db] %v connected", name)
 
-	return client
+	return client, name
 }
 
 // Garbage

@@ -11,7 +11,29 @@ import (
 )
 
 func POST_user(c *gin.Context) {
-	c.String(http.StatusOK, "add user controller")
+	username := c.Param("username")
+	o := fmt.Sprintf("User: %v", username)
+
+	var user *models.User = models.NewUser(username)
+	var result *models.User
+	users := get_collection("users")
+	err := users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
+	if err != nil {
+		_, err = users.InsertOne(context.TODO(), user)
+		if err != nil {
+			fmt.Printf("insert error: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "User added successfully",
+			"who":     o,
+			"user":    user,
+		})
+		return
+	}
+	c.JSON(http.StatusBadRequest, gin.H{"error": "User exists."})
 }
 
 func DEL_user(c *gin.Context) {

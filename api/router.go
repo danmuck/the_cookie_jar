@@ -44,7 +44,7 @@ func BaseRouter() *gin.Engine {
 	protected.Use(middleware.AuthMiddleware())
 	{
 		protected.GET("/", controllers.Root)
-		protected.POST("/info", controllers.Root)
+		protected.POST("/:username", controllers.POST_user)
 		protected.GET("/:username", controllers.GET_username)
 		protected.PUT("/:username", controllers.Root)
 		protected.DELETE("/:username", controllers.Root)
