@@ -3,7 +3,7 @@ FROM golang:latest
 ENV HOME=/root
 WORKDIR /root
 
-COPY . .
+COPY ./ ./
 
 # https://docs.docker.com/build/cache/optimize/
 

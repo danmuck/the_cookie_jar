@@ -3,9 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/danmuck/the_cookie_jar/api/database"
 	"github.com/danmuck/the_cookie_jar/api/models"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,13 +16,11 @@ func UpdateUsername(c *gin.Context) {
 		return
 	}
 	user.ID = username
-	db := database.GetClient()
-	user = *db.LookupUser(username)
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User updated successfully",
 		"user":    user,
 	})
-	db.UpdateUser(models.User{})
 	c.String(http.StatusOK, "pong")
 }
 
@@ -45,8 +41,7 @@ func LookupUser(c *gin.Context) {
 		return
 	}
 	user.ID = username
-	db := database.GetClient()
-	user = *db.LookupUser(username)
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User updated successfully",
 		"user":    user,

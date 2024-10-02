@@ -6,35 +6,116 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
-	"github.com/danmuck/the_cookie_jar/api/database"
+	"github.com/danmuck/the_cookie_jar/api"
 	"github.com/danmuck/the_cookie_jar/api/models"
-	"github.com/danmuck/the_cookie_jar/api/routers"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/address"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+var (
+	client Database
+)
+
+type Database struct {
+	uri     string
+	name    string
+	Client  *mongo.Client
+	err     error
+	start   sync.Once
+	timeout time.Duration
+}
+
+func (db *Database) UpdateUser(user models.User) {
+	db_ := db.Client.Database(db.name)
+	db_.CreateCollection(context.TODO(), "users")
+	users := db_.Collection("users")
+
+	_, err := users.InsertOne(context.TODO(), user)
+	if err != nil {
+		fmt.Printf("insert error: %v", err)
+	}
+}
+func (db *Database) LookupUser(username string) *models.User {
+	coll := db.Client.Database(db.name).Collection("users")
+	filter := bson.M{"username": username}
+
+	var result models.User
+	err := coll.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			db.UpdateUser(result)
+			return &result
+		}
+		return nil
+	}
+	return nil
+}
+
+func GetClient() *Database {
+	client.start.Do(initMongoDB)
+	return &client
+}
+
+func initMongoDB() {
+
+	client.timeout = 30 * time.Second
+	err := godotenv.Load(".env")
+	uri := os.Getenv("MONGODB_URI")
+	name := os.Getenv("DB_NAME")
+	if err != nil {
+		client.err = fmt.Errorf("cannot find file [.env]::[MONGODB_URI, DB_NAME] %v", err)
+	}
+	client.uri = uri
+	client.name = name
+
+	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
+	opts := options.Client().ApplyURI(client.uri).SetServerAPIOptions(serverAPI)
+	ctx, cancel := context.WithTimeout(context.Background(), client.timeout)
+	defer cancel()
+
+	cl, err := mongo.Connect(ctx, opts)
+	if err != nil {
+		client.err = fmt.Errorf("failed to connect to database: %v", err)
+	}
+
+	// Send a ping to confirm a successful connection
+	err = cl.Ping(context.TODO(), nil)
+	if err != nil {
+		client.err = fmt.Errorf("failed to ping to database: %v", err)
+	}
+
+	fmt.Printf("\n\n\n uri: %v ", uri)
+	fmt.Printf("\nPinged your deployment. You successfully connected to MongoDB! %v\n\n ", uri)
+
+	client.Client = cl
+	fmt.Printf("%v Created", client.name)
+}
 
 type Server struct {
 	addr         address.Address
 	organization string
 	org_key      string
 	router       *gin.Engine
-	db           *database.Database
+	db           *Database
 	plugins      map[string]*gin.Engine
 }
 
 func initServer(org_key string) Server {
-	db := database.GetClient()
+	db := GetClient()
 	s := Server{
 		addr:         address.Address("localhost"),
 		organization: "test_org",
 		org_key:      org_key,
 
 		db:      db,
-		router:  routers.BaseRouter(),
+		router:  api.BaseRouter(),
 		plugins: make(map[string]*gin.Engine),
 	}
 
@@ -42,7 +123,7 @@ func initServer(org_key string) Server {
 }
 
 func (s *Server) db_AddUser(user models.User) error {
-	coll := s.db.Client.Database("the_cookie_jar").Collection("users")
+	coll := client.Client.Database("the_cookie_jar").Collection("users")
 	filter := bson.M{"username": user.GetUsername()}
 
 	var result models.User
