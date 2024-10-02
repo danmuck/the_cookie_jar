@@ -10,12 +10,12 @@ import (
 )
 
 func Logger() gin.HandlerFunc {
-	fmt.Println(">> loaded Logger [middleware] .. ")
+	fmt.Println(">> [middleware] loaded Logger .. ")
 	return func(c *gin.Context) {
 		t := time.Now()
 
 		// Set example variable
-		c.Set("example", "12345")
+		c.Set("status", "using Logger() middleware")
 
 		// before request
 
@@ -24,15 +24,17 @@ func Logger() gin.HandlerFunc {
 		// after request
 		latency := time.Since(t)
 		log.Print(latency)
+		fmt.Printf(">> [middleware] Latency: %v \n", latency)
 
 		// access the status we are sending
 		status := c.Writer.Status()
 		log.Println(status)
+		fmt.Printf(">> [middleware] Status: %v \n", status)
 	}
 }
 
 func AuthMiddleware() gin.HandlerFunc {
-	fmt.Println(">> loaded AuthMiddleware [middleware] .. ")
+	fmt.Println(">> [middleware] loaded AuthMiddleware .. ")
 	return func(c *gin.Context) {
 		// Check if the user is authenticated
 		if isAuthenticated(c) {
@@ -44,9 +46,9 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 func isAuthenticated(c *gin.Context) bool {
-	fmt.Println(">> checking isAuthenticated .. ")
+	fmt.Println(">> [middleware] checking isAuthenticated .. ")
 	for k, v := range c.Keys {
-		fmt.Printf("k: %v \nv: %v", k, v)
+		fmt.Printf(">> [middleware] k: %v \nv: %v", k, v)
 	}
 	// Check if the user is authenticated based on a JWT token, session, or any other mechanism
 	// Return true if the user is authenticated, false otherwise

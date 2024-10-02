@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ServeHTML(router *gin.Engine) {
+func ServeHTML_demo(router *gin.Engine) {
 	router.LoadHTMLGlob("/root/public/templates/*")
 	router.GET("/users/posts", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
@@ -29,7 +29,9 @@ func ServeHTML(router *gin.Engine) {
 
 func BaseRouter() *gin.Engine {
 	router := gin.Default()
-	go ServeHTML(router)
+
+	go ServeHTML_demo(router)
+
 	// Public routes
 	public := router.Group("/users")
 	public.Use(middleware.Logger())
@@ -42,10 +44,10 @@ func BaseRouter() *gin.Engine {
 	protected.Use(middleware.AuthMiddleware())
 	{
 		protected.GET("/", controllers.Root)
-		protected.POST("/users", controllers.Root)
-		protected.GET("/users/:id", controllers.Root)
-		protected.PUT("/users/:id", controllers.Root)
-		protected.DELETE("/users/:id", controllers.Root)
+		protected.POST("/info", controllers.Root)
+		protected.GET("/:username", controllers.GET_username)
+		protected.PUT("/:username", controllers.Root)
+		protected.DELETE("/:username", controllers.Root)
 	}
 
 	return router

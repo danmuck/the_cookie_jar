@@ -173,13 +173,13 @@ func main() {
 		i := int64(rand.Intn(len(test_users)))
 		rs := test_users[i]
 		maker := *models.NewUser(rs)
-		fmt.Printf(">> waiting to insert random maker (%v with %v: \"%v\") \n>> .. ctrl-c to quit .. \n",
-			maker.GetUsername(), maker.Org, maker.GetStatus_String())
+		// fmt.Printf(">> waiting to insert random maker (%v with %v: \"%v\") \n>> .. ctrl-c to quit .. \n",
+		// 	maker.GetUsername(), maker.Org, maker.GetStatus_String())
 
 		time.Sleep(10 * time.Second)
 		err = server.db_AddUser(maker)
 		if err != nil {
-			fmt.Printf(">> error: %v \n", err.Error())
+			// fmt.Printf(">> error: %v \n", err.Error())
 
 			i = int64(rand.Intn(len(other_users)))
 			rs = other_users[i]
