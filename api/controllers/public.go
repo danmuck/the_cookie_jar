@@ -15,18 +15,31 @@ func PingPong(c *gin.Context) {
 }
 
 func Index(c *gin.Context) {
+	if c.Query("new_user") == "true" {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title":     "Welcome to the_cookie_jar API!",
+			"sub_title": "Learning Management System",
+			"body":      "Thanks for registering",
+		})
+		return
+	}
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"title":     "Index",
-		"sub_title": "Future Homepage",
-		"body":      "Some post text from a user that was in their recent post",
+		"title":           "Welcome to the_cookie_jar API!",
+		"sub_title":       "Learning Management System",
+		"body":            "TODO",
+		"register_button": "true",
 	})
 }
 
-func ServeUserRegistration(c *gin.Context) {
-	c.HTML(http.StatusOK, "register.tmpl", nil)
+func GET_UserRegistration(c *gin.Context) {
+	err := c.Query("error")
+
+	c.HTML(http.StatusOK, "register.tmpl", gin.H{
+		"error": err,
+	})
 }
 
-func UserRegistration(c *gin.Context) {
+func POST_UserRegistration(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	pw_bytes := []byte(password)
@@ -37,8 +50,6 @@ func UserRegistration(c *gin.Context) {
 	c.SetCookie("username", username, 3600, "/", "localhost", false, true)
 	c.SetCookie("password", string(hash), 3600, "/", "localhost", false, true)
 
-	note := fmt.Sprintf("username: %v password: %v", username, password)
-
 	var user *models.User = models.NewUser(username, string(hash))
 	var result *models.User
 	users := get_collection("users")
@@ -46,24 +57,12 @@ func UserRegistration(c *gin.Context) {
 	if err != nil {
 		_, err = users.InsertOne(context.TODO(), user)
 		if err != nil {
-			fmt.Printf("insert error: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			e := fmt.Sprintf("/register?error=%v", err)
+			c.Redirect(http.StatusFound, e)
 			return
 		}
-
-		c.JSON(http.StatusOK, gin.H{
-			"message": "User added successfully",
-			"note":    note,
-			"type":    "POST",
-			"user":    user,
-		})
+		c.Redirect(http.StatusFound, "/?new_user=true")
 		return
 	}
-
-	c.JSON(http.StatusBadRequest, gin.H{"error": ("exists:" + note)})
-	// c.HTML(http.StatusOK, "register.tmpl", gin.H{
-	// 	"username": "SUCCESS",
-	// 	"password": "password",
-	// 	"error":    nil,
-	// })
+	c.Redirect(http.StatusFound, "/register?error=username_taken")
 }

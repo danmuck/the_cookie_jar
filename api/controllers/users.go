@@ -45,7 +45,24 @@ func POST_user(c *gin.Context) {
 }
 
 func DEL_user(c *gin.Context) {
-	c.String(http.StatusOK, "delete user controller")
+	username := c.Param("username")
+	id := c.Query("id")
+	o := fmt.Sprintf("username: %v", username)
+
+	coll := get_collection("users")
+	filter := bson.M{"_id": id}
+
+	var result models.User
+	err := coll.FindOneAndDelete(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		c.String(http.StatusNotFound, "User does not exist")
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User deleted successfully",
+		"who":     o,
+		"type":    "DELETE",
+		"user":    result,
+	})
 }
 
 func GET_username(c *gin.Context) {

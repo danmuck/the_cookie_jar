@@ -1,14 +1,29 @@
 <html>
-	<h1>Template Demo</h1>
+  <head>
+    <style>
+      body {
+        background-color: rgb(80, 82, 80);
+        color: rgb(56, 194, 224);
+      }
+    </style>
+  </head>
+  <h1>the_cookie_jar</h1>
 
-	<h2>
-		{{ .title }}
-	</h2>
-	<hr>
-	<h3>
-		{{ .sub_title }}
-	</h3>
-	<b style="color: red">
-		{{ .body }}
-	</b>
+  <h2>
+    {{ .title }}
+  </h2>
+  <hr />
+  <h3>
+    {{ .sub_title }}
+  </h3>
+  <b style="color: rgb(208, 76, 10)">
+    {{ .body }}
+  </b>
+  {{ if .register_button }}
+  <button type="button">
+    <a href="/register"> Register </a>
+  </button>
+  {{
+    end
+  }}
 </html>
