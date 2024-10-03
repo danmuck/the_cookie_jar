@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	new_user := models.NewUser("Big")
+	new_user := models.NewUser("Big", "password")
 	var tmp int = 12
 
 	fmt.Fprintf(os.Stdout, "\n\nSup, %s --%s age: %d \n\n", new_user.GetUsername(), new_user.GetStatus_String(), tmp)

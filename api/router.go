@@ -38,8 +38,9 @@ func BaseRouter() *gin.Engine {
 	public := router.Group("/")
 	public.Use(middleware.Logger())
 	{
-		public.GET("/", controllers.Root)
-		public.POST("/register", controllers.PingPong)
+		public.GET("/", controllers.Index)
+		public.GET("/register", controllers.ServeUserRegistration)
+		public.POST("/register", controllers.UserRegistration)
 		public.POST("/login", controllers.PingPong)
 	}
 	// Protected routes
@@ -49,8 +50,8 @@ func BaseRouter() *gin.Engine {
 		protected.GET("/", controllers.PingPong)
 		protected.POST("/:username", controllers.POST_user)
 		protected.GET("/:username", controllers.GET_username)
-		protected.PUT("/:username", controllers.Root)
-		protected.DELETE("/:username", controllers.Root)
+		protected.PUT("/:username", controllers.Index)
+		protected.DELETE("/:username", controllers.Index)
 	}
 
 	return router

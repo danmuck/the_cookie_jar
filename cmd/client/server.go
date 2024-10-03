@@ -63,17 +63,16 @@ func main() {
 	other_users := []string{"Guest", "Professor", "TA", "Admin", "Student"}
 
 	for {
-		time.Sleep(10 * time.Second)
+		time.Sleep(5 * time.Second)
 
 		i := int64(rand.Intn(len(test_users)))
 		rs := test_users[i]
 		path := fmt.Sprintf("http://localhost:6669/users/%s", rs)
 		request, _ := http.NewRequest("POST", path, nil)
 		client := &http.Client{}
-		_, err = client.Do(request)
+		response, _ := client.Do(request)
 
-		if err != nil {
-
+		if response.Status != "200 OK" {
 			i = int64(rand.Intn(len(other_users)))
 			rs = other_users[i]
 			path := fmt.Sprintf("http://localhost:6669/users/%s", rs)

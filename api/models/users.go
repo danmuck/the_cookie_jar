@@ -1,17 +1,22 @@
 package models
 
 import (
-	"github.com/google/uuid"
+	"fmt"
 	"time"
+
+	"github.com/google/uuid"
+	// "golang.org/x/crypto/bcrypt"
+	// "golang.org/x/crypto/bcrypt"
 )
 
 // go naming conventions make anything starting with lowercase letter --> private
 type User struct {
 	ID       string `bson:"_id" json:"id"`
-	Username string `bson:"username" json:"username"`
-	Org      string `bson:"org" json:"org"`
+	Username string `bson:"username" json:"username" form:"username"`
+	Org      string `bson:"org" json:"org" form:"org"`
 	role     role
-	Status   *status `bson:"status,omitempty" json:"status"`
+	Status   *status `bson:"status,omitempty" json:"status" form:"status"`
+	Hash     string  `bson:"password" json:"password" form:"password"`
 }
 
 type role struct {
@@ -21,9 +26,9 @@ type role struct {
 
 // since this starts with lowercase letter it is private and cannot be accessed outside of this package
 type status struct {
-	ID        string    `bson:"_id" json:"id"`
-	Status    string    `bson:"status" json:"status"`
-	Timestamp time.Time `bson:"timestamp" json:"timestamp"`
+	ID        string    `bson:"_id" json:"id" form:"id"`
+	Status    string    `bson:"status" json:"status" form:"status"`
+	Timestamp time.Time `bson:"timestamp" json:"timestamp" form:"timestamp"`
 }
 
 func (u *User) updateStatus(s string) {
@@ -57,7 +62,7 @@ func (u *User) GetStatus_String() string {
 }
 
 // constructor -->
-func NewUser(name string) *User {
+func NewUser(name string, password string) *User {
 	id := uuid.New()
 	s := NewStatus("I'm new here.")
 	u := &User{
@@ -65,9 +70,26 @@ func NewUser(name string) *User {
 		Username: name,
 		Status:   &s,
 		role:     role{s: "default", auth: "nil"},
-		Org:      "Not Verified",
+		Org:      "no organization",
+		Hash:     password,
 	}
-	u.updateStatus("I am new here.")
+	// pw_bytes := []byte(password)
+	// hash, err := bcrypt.GenerateFromPassword(pw_bytes, bcrypt.DefaultCost)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// Comparing the password with the hash
+	// err = bcrypt.CompareHashAndPassword(hash, pw_bytes)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	status := fmt.Sprintf("I am new so have my -- username: %v password: %v",
+		u.Username, password)
+
+	u.updateStatus(status)
+	// u.Hash = string(hash)
 
 	return u
 }

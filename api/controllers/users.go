@@ -12,9 +12,14 @@ import (
 
 func POST_user(c *gin.Context) {
 	username := c.Param("username")
-	o := fmt.Sprintf("search_param:username: %v", username)
+	password := c.Param("password")
+	if password == "" {
+		password = "pass@!word"
+	}
 
-	var user *models.User = models.NewUser(username)
+	o := fmt.Sprintf("search_param:username: %v password: %v", username, password)
+
+	var user *models.User = models.NewUser(username, password)
 	var result *models.User
 	users := get_collection("users")
 	err := users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)

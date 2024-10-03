@@ -21,5 +21,6 @@ from project directory:
 
 EXPECT:
 ```
-  app-1       | >> [db] Pinged your deployment. You successfully connected to MongoDB!
+cookie_lms  | >> [db] Pinged your deployment. You successfully connected to MongoDB! mongodb://database:27017/ 
+cookie_lms  | [GIN] 2024/10/02 - 22:04:21 | 400 |   20.532541ms |             ::1 | POST     "/users/maker_name"
 ```
