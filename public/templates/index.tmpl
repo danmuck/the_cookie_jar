@@ -1,11 +1,6 @@
-<html>
+<html lang="en">
   <head>
-    <style>
-      body {
-        background-color: rgb(80, 82, 80);
-        color: rgb(56, 194, 224);
-      }
-    </style>
+    <link rel="stylesheet" href="/public/styles/public.css" />
   </head>
   <h1>the_cookie_jar</h1>
 
@@ -26,4 +21,21 @@
   {{
     end
   }}
+
+  <ul>
+    {{
+      range.routes
+    }}
+    <li>
+      <a
+        href="{{ .Path }}"
+        method="{{ .Method }}"
+        style="color: white; text-decoration: none; font-family: monospace"
+        >{{ .Method }} {{ .Path }}</a
+      >
+    </li>
+    {{
+      end
+    }}
+  </ul>
 </html>

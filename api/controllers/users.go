@@ -10,6 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+/*
+	TODO:
+	if user is not logged in, redirect to login page
+	PUT update user
+
+*/
+
 func POST_user(c *gin.Context) {
 	username := c.Param("username")
 	password := c.Param("password")
@@ -17,7 +24,7 @@ func POST_user(c *gin.Context) {
 		password = "pass@!word"
 	}
 
-	o := fmt.Sprintf("search_param:username: %v password: %v", username, password)
+	dev := fmt.Sprintf("username: %v password: %v", username, password)
 
 	var user *models.User = models.NewUser(username, password)
 	var result *models.User
@@ -33,7 +40,7 @@ func POST_user(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{
 			"message": "User added successfully",
-			"who":     o,
+			"who":     dev,
 			"type":    "POST",
 
 			"user": user,
@@ -45,9 +52,7 @@ func POST_user(c *gin.Context) {
 }
 
 func DEL_user(c *gin.Context) {
-	username := c.Param("username")
 	id := c.Query("id")
-	o := fmt.Sprintf("username: %v", username)
 
 	coll := get_collection("users")
 	filter := bson.M{"_id": id}
@@ -57,9 +62,11 @@ func DEL_user(c *gin.Context) {
 	if err != nil {
 		c.String(http.StatusNotFound, "User does not exist")
 	}
+
+	dev := fmt.Sprintf("[DEL_user] username: %v", result.Username)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User deleted successfully",
-		"who":     o,
+		"who":     dev,
 		"type":    "DELETE",
 		"user":    result,
 	})
@@ -67,7 +74,7 @@ func DEL_user(c *gin.Context) {
 
 func GET_username(c *gin.Context) {
 	username := c.Param("username")
-	o := fmt.Sprintf("search_param:username: %v", username)
+	dev := fmt.Sprintf("[GET_username] username: %v", username)
 
 	// logic to look up user from mongodb
 	coll := get_collection("users")
@@ -82,7 +89,7 @@ func GET_username(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User found successfully",
-		"who":     o,
+		"who":     dev,
 		"type":    "GET",
 		"user":    result,
 	})

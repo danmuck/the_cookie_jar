@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	// "golang.org/x/crypto/bcrypt"
-	// "golang.org/x/crypto/bcrypt"
 )
 
 // go naming conventions make anything starting with lowercase letter --> private
@@ -89,7 +87,6 @@ func NewUser(name string, password string) *User {
 		u.Username, password)
 
 	u.updateStatus(status)
-	// u.Hash = string(hash)
 
 	return u
 }

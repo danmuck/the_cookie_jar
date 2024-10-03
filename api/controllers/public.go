@@ -14,6 +14,23 @@ func PingPong(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
+func RouteIndex(c *gin.Context) {
+	if c.Query("new_user") == "true" {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title":     "Welcome to the_cookie_jar API!",
+			"sub_title": "Learning Management System",
+			"body":      "Thanks for registering",
+		})
+		return
+	}
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"title":           "Welcome to the_cookie_jar API!",
+		"sub_title":       "Learning Management System",
+		"body":            "TODO",
+		"register_button": "true",
+	})
+}
+
 func Index(c *gin.Context) {
 	if c.Query("new_user") == "true" {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{

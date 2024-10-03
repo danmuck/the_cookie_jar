@@ -1,11 +1,14 @@
 package api
 
 import (
+	// "encoding/json"
+	// "fmt"
 	"net/http"
 
 	"github.com/danmuck/the_cookie_jar/api/controllers"
 	"github.com/danmuck/the_cookie_jar/api/middleware"
 	"github.com/gin-gonic/gin"
+	// "go.mongodb.org/mongo-driver/bson"
 )
 
 func ServeHTML_demo(router *gin.Engine) {
@@ -30,7 +33,8 @@ func BaseRouter() *gin.Engine {
 	// init router
 	router := gin.Default()
 	// load templates (will error if none exist at path)
-	router.LoadHTMLGlob("/root/public/templates/*")
+	router.LoadHTMLGlob("/root/public/templates/*")    // load templates
+	router.Static("/public/styles", "./public/styles") // load css stylesheets
 
 	go ServeHTML_demo(router)
 
@@ -53,6 +57,28 @@ func BaseRouter() *gin.Engine {
 		protected.GET("/:username", controllers.GET_username)
 		protected.PUT("/:username", controllers.Index)
 		protected.DELETE("/:username", controllers.DEL_user)
+	}
+
+	dev := router.Group("/dev")
+	{
+		dev.GET("/routes", func(c *gin.Context) {
+			routes := router.Routes()
+			type tmp struct {
+				Method string `json:"Method"`
+				Path   string `json:"Path"`
+			}
+			var t []tmp
+			for _, route := range routes {
+				r := tmp{
+					Path:   route.Path,
+					Method: route.Method,
+				}
+				t = append(t, r)
+			}
+			c.HTML(http.StatusOK, "index.tmpl", gin.H{
+				"routes": t,
+			})
+		})
 	}
 
 	return router

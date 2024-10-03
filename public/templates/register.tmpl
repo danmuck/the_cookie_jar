@@ -2,20 +2,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      body {
-        background-color: rgb(80, 82, 80);
-        color: rgb(56, 194, 224);
-      }
-    </style>
+    <link rel="stylesheet" href="/public/styles/public.css" />
     <title>Register</title>
   </head>
 
   <body>
     <h2>Welcome to the_cookie_jar, register here:</h2>
+
     {{ if .error }}
-    <p style="color: rgb(177, 13, 13)">{{ .error }}</p>
+    <h3 style="color: rgb(177, 13, 13)">{{ .error }}</h3>
     {{ end }}
+
     <form action="/register" method="post">
       <label for="username">Username:</label><br />
       <input type="text" id="username" name="username" required /><br />
