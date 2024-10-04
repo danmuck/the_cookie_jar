@@ -83,3 +83,34 @@ func POST_UserRegistration(c *gin.Context) {
 	}
 	c.Redirect(http.StatusFound, "/register?error=username_taken")
 }
+
+func GET_UserLogin(c *gin.Context) {
+	err := c.Query("error")
+
+	c.HTML(http.StatusOK, "login.tmpl", gin.H{
+		"title":     "Welcome!",
+		"sub_title": "Login please!",
+		"error":     err,
+	})
+}
+
+func POST_UserLogin(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+
+	var result *models.User
+	users := get_collection("users")
+	err := users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
+	if err != nil {
+		c.Redirect(http.StatusFound, "/login?error=no_user")
+		return
+	}
+	if result.VerifyPassword(password) {
+		c.Redirect(http.StatusFound, "/?login=true")
+		c.SetCookie("username", result.Username, 3600, "/", "localhost", false, true)
+		c.SetCookie("password", result.Auth.Hash, 3600, "/", "localhost", false, true)
+		return
+
+	}
+	c.Redirect(http.StatusFound, "/login?error=bad_password")
+}

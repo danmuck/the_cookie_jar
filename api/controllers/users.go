@@ -13,18 +13,15 @@ import (
 /*
 	TODO:
 	if user is not logged in, redirect to login page
-	PUT update user
 
 */
 
-func POST_user(c *gin.Context) {
+func POST_User(c *gin.Context) {
 	username := c.Param("username")
 	password := c.Param("password")
 	if password == "" {
 		password = "pass@!word"
 	}
-
-	dev := fmt.Sprintf("username: %v password: %v", username, password)
 
 	var user *models.User = models.NewUser(username, password)
 	var result *models.User
@@ -34,16 +31,19 @@ func POST_user(c *gin.Context) {
 		_, err = users.InsertOne(context.TODO(), user)
 		if err != nil {
 			fmt.Printf("insert error: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error":    err.Error(),
+				"type":     "POST",
+				"who":      username,
+				"password": password,
+			})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"message": "User added successfully",
-			"who":     dev,
 			"type":    "POST",
-
-			"user": user,
+			"user":    user,
 		})
 		return
 	}
@@ -51,9 +51,8 @@ func POST_user(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{"error": "User exists."})
 }
 
-func DEL_user(c *gin.Context) {
+func DEL_User(c *gin.Context) {
 	id := c.Query("id")
-
 	coll := get_collection("users")
 	filter := bson.M{"_id": id}
 
@@ -63,20 +62,16 @@ func DEL_user(c *gin.Context) {
 		c.String(http.StatusNotFound, "User does not exist")
 	}
 
-	dev := fmt.Sprintf("[DEL_user] username: %v", result.Username)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User deleted successfully",
-		"who":     dev,
 		"type":    "DELETE",
+		"who":     result.Username,
 		"user":    result,
 	})
 }
 
-func GET_username(c *gin.Context) {
+func GET_Username(c *gin.Context) {
 	username := c.Param("username")
-	dev := fmt.Sprintf("[GET_username] username: %v", username)
-
-	// logic to look up user from mongodb
 	coll := get_collection("users")
 	filter := bson.M{"username": username}
 
@@ -89,25 +84,55 @@ func GET_username(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User found successfully",
-		"who":     dev,
 		"type":    "GET",
+		"who":     username,
 		"user":    result,
 	})
 }
 
-func PUT_username(c *gin.Context) {
+func PUT_User(c *gin.Context) {
+	id := c.Param("id")
+	coll := get_collection("users")
+	filter := bson.M{"_id": id}
+
 	var user models.User
-	username := c.Param("username")
-	err := c.BindJSON(&user)
+	err := coll.FindOne(context.TODO(), filter).Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	user.ID = username
+
+	queries := []string{"username", "password", "org", "status"}
+	for _, param := range queries {
+		value := c.Query(param)
+		if value == "" {
+			continue
+		}
+		switch param {
+		case "username":
+			user.Username = value
+		case "password":
+			user.UpdatePassword(value)
+		case "org":
+			user.Org = value
+		case "status":
+			user.UpdateStatus(value)
+		default:
+		}
+	}
+
+	result, err := coll.ReplaceOne(context.TODO(), filter, user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  err.Error(),
+			"result": user,
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User updated successfully",
+		"result":  result,
 		"user":    user,
 	})
-	// c.String(http.StatusOK, "pong")
 }

@@ -11,6 +11,7 @@ import (
 
 func Logger() gin.HandlerFunc {
 	fmt.Println(">> [middleware] loaded Logger .. ")
+
 	return func(c *gin.Context) {
 		t := time.Now()
 

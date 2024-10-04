@@ -1,14 +1,11 @@
 package api
 
 import (
-	// "encoding/json"
-	// "fmt"
 	"net/http"
 
 	"github.com/danmuck/the_cookie_jar/api/controllers"
 	"github.com/danmuck/the_cookie_jar/api/middleware"
 	"github.com/gin-gonic/gin"
-	// "go.mongodb.org/mongo-driver/bson"
 )
 
 func ServeHTML_demo(router *gin.Engine) {
@@ -46,17 +43,19 @@ func BaseRouter() *gin.Engine {
 		public.POST("/", controllers.Index)
 		public.GET("/register", controllers.GET_UserRegistration)
 		public.POST("/register", controllers.POST_UserRegistration)
-		public.POST("/login", controllers.PingPong)
+		public.GET("/login", controllers.GET_UserLogin)
+		public.POST("/login", controllers.POST_UserLogin)
 	}
 	// Protected routes
 	protected := router.Group("/users")
 	protected.Use(middleware.AuthMiddleware())
 	{
 		protected.GET("/", controllers.PingPong)
-		protected.POST("/:username", controllers.POST_user)
-		protected.GET("/:username", controllers.GET_username)
-		protected.PUT("/:username", controllers.Index)
-		protected.DELETE("/:username", controllers.DEL_user)
+
+		protected.GET("/:username", controllers.GET_Username)
+		protected.POST("/:username", controllers.POST_User)
+		protected.PUT("/:id", controllers.PUT_User)
+		protected.DELETE("/:username", controllers.DEL_User)
 	}
 
 	dev := router.Group("/dev")
