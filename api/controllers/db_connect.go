@@ -18,7 +18,6 @@ func get_collection(coll string) *mongo.Collection {
 }
 
 func connectMongoDB() (*mongo.Client, string) {
-
 	err := godotenv.Load(".env")
 	uri := os.Getenv("MONGODB_URI")
 	name := os.Getenv("DB_NAME")
@@ -42,8 +41,5 @@ func connectMongoDB() (*mongo.Client, string) {
 	if err != nil {
 		panic(fmt.Errorf("failed to ping to database: %v", err))
 	}
-
-	fmt.Printf(">> [db] Pinged your deployment. You successfully connected to MongoDB! %v \n", uri)
-
 	return client, name
 }

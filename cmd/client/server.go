@@ -60,29 +60,14 @@ func main() {
 	go server.Serve()
 
 	test_users := []string{"dan_m", "michael_r", "michael_ys", "saqib_m", "cordell_h"}
-	other_users := []string{"Guest", "Professor", "TA", "Admin", "Student"}
 
 	for {
-		time.Sleep(10 * time.Second)
-
 		i := int64(rand.Intn(len(test_users)))
 		rs := test_users[i]
 		path := fmt.Sprintf("http://localhost:6669/users/%s", rs)
 		request, _ := http.NewRequest("POST", path, nil)
 		client := &http.Client{}
-		_, err = client.Do(request)
-
-		if err != nil {
-
-			i = int64(rand.Intn(len(other_users)))
-			rs = other_users[i]
-			path := fmt.Sprintf("http://localhost:6669/users/%s", rs)
-			request, _ := http.NewRequest("POST", path, nil)
-			client := &http.Client{}
-			_, err = client.Do(request)
-			if err != nil {
-				panic(err)
-			}
-		}
+		client.Do(request)
+		time.Sleep(300 * time.Second)
 	}
 }

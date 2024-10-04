@@ -11,5 +11,7 @@ services:
   database:
     container_name: "database_m"
     image: mongo
+    attach:
+      false
     ports:
       - '27017:27017'

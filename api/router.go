@@ -30,7 +30,8 @@ func BaseRouter() *gin.Engine {
 	// init router
 	router := gin.Default()
 	// load templates (will error if none exist at path)
-	router.LoadHTMLGlob("/root/public/templates/*")
+	router.LoadHTMLGlob("/root/public/templates/*")    // load templates
+	router.Static("/public/styles", "./public/styles") // load css stylesheets
 
 	go ServeHTML_demo(router)
 
@@ -38,19 +39,45 @@ func BaseRouter() *gin.Engine {
 	public := router.Group("/")
 	public.Use(middleware.Logger())
 	{
-		public.GET("/", controllers.Root)
-		public.POST("/register", controllers.PingPong)
-		public.POST("/login", controllers.PingPong)
+		public.GET("/", controllers.Index)
+		public.POST("/", controllers.Index)
+		public.GET("/register", controllers.GET_UserRegistration)
+		public.POST("/register", controllers.POST_UserRegistration)
+		public.GET("/login", controllers.GET_UserLogin)
+		public.POST("/login", controllers.POST_UserLogin)
 	}
 	// Protected routes
 	protected := router.Group("/users")
 	protected.Use(middleware.AuthMiddleware())
 	{
 		protected.GET("/", controllers.PingPong)
-		protected.POST("/:username", controllers.POST_user)
-		protected.GET("/:username", controllers.GET_username)
-		protected.PUT("/:username", controllers.Root)
-		protected.DELETE("/:username", controllers.Root)
+
+		protected.GET("/:username", controllers.GET_Username)
+		protected.POST("/:username", controllers.POST_User)
+		protected.PUT("/:id", controllers.PUT_User)
+		protected.DELETE("/:username", controllers.DEL_User)
+	}
+
+	dev := router.Group("/dev")
+	{
+		dev.GET("/routes", func(c *gin.Context) {
+			routes := router.Routes()
+			type tmp struct {
+				Method string `json:"Method"`
+				Path   string `json:"Path"`
+			}
+			var t []tmp
+			for _, route := range routes {
+				r := tmp{
+					Path:   route.Path,
+					Method: route.Method,
+				}
+				t = append(t, r)
+			}
+			c.HTML(http.StatusOK, "index.tmpl", gin.H{
+				"routes": t,
+			})
+		})
 	}
 
 	return router
