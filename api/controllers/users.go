@@ -25,7 +25,7 @@ func POST_User(c *gin.Context) {
 
 	var user *models.User = models.NewUser(username, password)
 	var result *models.User
-	users := get_collection("users")
+	users := getCollection("users")
 	err := users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
 	if err != nil {
 		_, err = users.InsertOne(context.TODO(), user)
@@ -53,7 +53,7 @@ func POST_User(c *gin.Context) {
 
 func DEL_User(c *gin.Context) {
 	id := c.Query("id")
-	coll := get_collection("users")
+	coll := getCollection("users")
 	filter := bson.M{"_id": id}
 
 	var result models.User
@@ -72,7 +72,7 @@ func DEL_User(c *gin.Context) {
 
 func GET_Username(c *gin.Context) {
 	username := c.Param("username")
-	coll := get_collection("users")
+	coll := getCollection("users")
 	filter := bson.M{"username": username}
 
 	var result models.User
@@ -92,7 +92,7 @@ func GET_Username(c *gin.Context) {
 
 func PUT_User(c *gin.Context) {
 	id := c.Param("id")
-	coll := get_collection("users")
+	coll := getCollection("users")
 	filter := bson.M{"_id": id}
 
 	var user models.User
