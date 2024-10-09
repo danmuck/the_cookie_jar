@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danmuck/the_cookie_jar/api/database"
 	"github.com/danmuck/the_cookie_jar/api/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -25,7 +26,7 @@ func POST_User(c *gin.Context) {
 
 	var user *models.User = models.NewUser(username, password)
 	var result *models.User
-	users := getCollection("users")
+	users := database.GetCollection("users")
 	err := users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
 	if err != nil {
 		_, err = users.InsertOne(context.TODO(), user)
@@ -53,7 +54,7 @@ func POST_User(c *gin.Context) {
 
 func DEL_User(c *gin.Context) {
 	id := c.Query("id")
-	coll := getCollection("users")
+	coll := database.GetCollection("users")
 	filter := bson.M{"_id": id}
 
 	var result models.User
@@ -72,7 +73,7 @@ func DEL_User(c *gin.Context) {
 
 func GET_Username(c *gin.Context) {
 	username := c.Param("username")
-	coll := getCollection("users")
+	coll := database.GetCollection("users")
 	filter := bson.M{"username": username}
 
 	var result models.User
@@ -92,7 +93,7 @@ func GET_Username(c *gin.Context) {
 
 func PUT_User(c *gin.Context) {
 	id := c.Param("id")
-	coll := getCollection("users")
+	coll := database.GetCollection("users")
 	filter := bson.M{"_id": id}
 
 	var user models.User
