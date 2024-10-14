@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/danmuck/the_cookie_jar/api"
+	"github.com/danmuck/the_cookie_jar/pkg/api"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo/address"
 )
@@ -36,7 +36,7 @@ func initServer(org_key string) Server {
 func (s *Server) Serve() error {
 	// Listen and Server @ localhost:8080
 	// NOTE: this is mapped on Dockerfile and is served to browser at 8080
-	err := s.router.Run(":6669")
+	err := s.router.Run(":8080")
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func main() {
 	for {
 		i := int64(rand.Intn(len(test_users)))
 		rs := test_users[i]
-		path := fmt.Sprintf("http://localhost:6669/users/%s", rs)
+		path := fmt.Sprintf("http://localhost:8080/users/%s", rs)
 		request, _ := http.NewRequest("POST", path, nil)
 		client := &http.Client{}
 		client.Do(request)

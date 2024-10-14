@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/danmuck/the_cookie_jar/api/models"
+	"github.com/danmuck/the_cookie_jar/pkg/api/database"
+	"github.com/danmuck/the_cookie_jar/pkg/api/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -69,7 +70,7 @@ func POST_UserRegistration(c *gin.Context) {
 
 	var user *models.User = models.NewUser(username, string(hash))
 	var result *models.User
-	users := get_collection("users")
+	users := database.GetCollection("users")
 	err = users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
 	if err != nil {
 		_, err = users.InsertOne(context.TODO(), user)
@@ -99,7 +100,7 @@ func POST_UserLogin(c *gin.Context) {
 	password := c.PostForm("password")
 
 	var result *models.User
-	users := get_collection("users")
+	users := database.GetCollection("users")
 	err := users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
 	if err != nil {
 		c.Redirect(http.StatusFound, "/login?error=no_user")
