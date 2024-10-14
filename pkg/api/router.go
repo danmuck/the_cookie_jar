@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/danmuck/the_cookie_jar/api/controllers"
-	"github.com/danmuck/the_cookie_jar/api/middleware"
+	"github.com/danmuck/the_cookie_jar/pkg/api/controllers"
+	"github.com/danmuck/the_cookie_jar/pkg/api/middleware"
 	"github.com/gin-gonic/gin"
 )
 

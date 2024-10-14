@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/danmuck/the_cookie_jar/api/database"
-	"github.com/danmuck/the_cookie_jar/api/models"
+	"github.com/danmuck/the_cookie_jar/pkg/api/database"
+	"github.com/danmuck/the_cookie_jar/pkg/api/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
