@@ -3,9 +3,8 @@ package models
 import (
 	"fmt"
 	"time"
-
+	"github.com/danmuck/the_cookie_jar/pkg/api/middleware"
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // go naming conventions make anything starting with lowercase letter --> private
@@ -18,11 +17,10 @@ type User struct {
 }
 
 type Credentials struct {
-	Hash string `bson:"password" json:"password" form:"password"`
-	JWT  string `bson:"jwt" json:"jwt"`
-	Auth string `bson:"auth_token" json:"auth_token"`
+	Hash           string    `bson:"password" json:"password" form:"password"`
+	HashedToken    string    `bson:"hashed_token" json:"hashed_token"`
+	TokenExpiration time.Time `bson:"token_expiration" json:"token_expiration"`
 }
-
 // since this starts with lowercase letter it is private and cannot be accessed outside of this package
 type status struct {
 	ID        string    `bson:"_id" json:"id" form:"id"`
@@ -48,24 +46,23 @@ func (u *User) UpdateStatus(s string) {
 }
 
 func (u *User) UpdatePassword(password string) {
-	pw_bytes := []byte(password)
-	hash, err := bcrypt.GenerateFromPassword(pw_bytes, bcrypt.DefaultCost)
-	if err != nil {
+	if !middleware.CheckPasswordHash(password, u.Auth.Hash) {
+		fmt.Errorf("current password is incorrect")
+		return
+	}
+	
+	hashedPassword, err := middleware.HashPassword(password)
+	if err != nil{
 		panic(err)
 	}
 
-	err = bcrypt.CompareHashAndPassword(hash, pw_bytes)
-	if err != nil {
-		panic(err)
-	}
-
-	u.Auth.Hash = string(hash)
+	u.Auth.Hash = hashedPassword
 }
 
 func (u *User) VerifyPassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Auth.Hash), []byte(password))
-	return err == nil
-}
+    result := middleware.CheckPasswordHash(password, u.Auth.Hash)
+    fmt.Printf("Password verification result: %v\n", result)
+    return result}
 
 // use public methods starting with capital letter to interface with private attributes
 func (u *User) GetId() string {
@@ -81,21 +78,25 @@ func (u *User) GetStatus_String() string {
 }
 
 // constructor -->
-func NewUser(name string, password string) *User {
+func NewUser(name string, password string) (*User, error) {
 	id := uuid.New()
 	s := NewStatus("I'm new here.")
+	
+	hashedPassword, err := middleware.HashPassword(password)
+	if err != nil {
+		return nil, err
+	}
+	var placeholderTime time.Time
 	u := &User{
 		ID:       id.String(),
 		Username: name,
 		Status:   &s,
-		Auth:     Credentials{Hash: password, Auth: "nil_auth", JWT: "nil_jwt"},
+		Auth:     Credentials{Hash: hashedPassword, HashedToken: "nil_auth", TokenExpiration: placeholderTime},
 		Org:      "no organization",
 	}
 
-	status := fmt.Sprintf("I am new so have my -- username: %v password: %v",
-		u.Username, password)
+	
 
-	u.UpdateStatus(status)
 
-	return u
+	return u, nil
 }
