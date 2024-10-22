@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
@@ -23,42 +22,21 @@ func POST_User(c *gin.Context) {
 	if password == "" {
 		password = "pass@!word"
 	}
-
-	user, err := models.NewUser(username, password)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{
-            "error":    err.Error(),
-            "type":     "POST",
-            "who":      username,
-            "password": password,
-        })
-        return
-    }
-	var result *models.User
-	users := database.GetCollection("users")
-	err = users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
+	err := database.AddUser(username, password)
 	if err != nil {
-		_, err = users.InsertOne(context.TODO(), user)
-		if err != nil {
-			fmt.Printf("insert error: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error":    err.Error(),
-				"type":     "POST",
-				"who":      username,
-				"password": password,
-			})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{
-			"message": "User added successfully",
-			"type":    "POST",
-			"user":    user,
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":    err.Error(),
+			"type":     "POST",
+			"who":      username,
+			"password": password,
 		})
 		return
 	}
 
-	c.JSON(http.StatusBadRequest, gin.H{"error": "User exists."})
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User added successfully",
+		"type":    "POST",
+	})
 }
 
 func DEL_User(c *gin.Context) {
@@ -82,11 +60,7 @@ func DEL_User(c *gin.Context) {
 
 func GET_Username(c *gin.Context) {
 	username := c.Param("username")
-	coll := database.GetCollection("users")
-	filter := bson.M{"username": username}
-
-	var result models.User
-	err := coll.FindOne(context.TODO(), filter).Decode(&result)
+	user, err := database.GetUser(username)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
@@ -96,7 +70,7 @@ func GET_Username(c *gin.Context) {
 		"message": "User found successfully",
 		"type":    "GET",
 		"who":     username,
-		"user":    result,
+		"user":    user,
 	})
 }
 
@@ -122,11 +96,7 @@ func PUT_User(c *gin.Context) {
 		case "username":
 			user.Username = value
 		case "password":
-			user.UpdatePassword(value)
-		case "org":
-			user.Org = value
-		case "status":
-			user.UpdateStatus(value)
+			user.Auth.PasswordHash = ""
 		default:
 		}
 	}

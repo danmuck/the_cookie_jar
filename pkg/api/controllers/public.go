@@ -1,15 +1,12 @@
 package controllers
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"time"
-	"github.com/danmuck/the_cookie_jar/pkg/api/middleware"
-	"github.com/danmuck/the_cookie_jar/pkg/api/models"
+
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func PingPong(c *gin.Context) {
@@ -59,32 +56,24 @@ func GET_UserRegistration(c *gin.Context) {
 }
 
 func POST_UserRegistration(c *gin.Context) {
-    username := c.PostForm("username")
-    password := c.PostForm("password")
-	fmt.Println("Raw password during registration:", password)
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	password_confirm := c.PostForm("password_confirm")
 
-    user, err := models.NewUser(username, password)
-    if err != nil {
-        e := fmt.Sprintf("/register?error=%v", err)
-        c.Redirect(http.StatusFound, e)
-        return
-    }
+	if password != password_confirm {
+		e := fmt.Sprintf("/register?error=%v", "passwords do not match")
+		c.Redirect(http.StatusFound, e)
+		return
+	}
 
-    var result *models.User
-    users := database.GetCollection("users")
-    
-    err = users.FindOne(context.TODO(), bson.M{"username": username}).Decode(&result)
-    if err != nil {
-        _, err = users.InsertOne(context.TODO(), user)
-        if err != nil {
-            e := fmt.Sprintf("/register?error=%v", err)
-            c.Redirect(http.StatusFound, e)
-            return
-        }
-        c.Redirect(http.StatusFound, "/?new_user=true")
-        return
-    }
-    c.Redirect(http.StatusFound, "/register?error=username_taken")
+	err := database.AddUser(username, password)
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+
+	c.Redirect(http.StatusFound, "/?new_user=true")
 }
 
 func GET_UserLogin(c *gin.Context) {
@@ -98,46 +87,22 @@ func GET_UserLogin(c *gin.Context) {
 }
 
 func POST_UserLogin(c *gin.Context) {
-    username := c.PostForm("username")
-    password := c.PostForm("password")
+	username := c.PostForm("username")
+	password := c.PostForm("password")
 
-    var result *models.User
-    users := database.GetCollection("users")
+	// If the password matches, generate an auth token
+	err := database.VerifyPassword(username, password)
+	if err != nil {
+		c.Redirect(http.StatusFound, "/login?error=bad_password")
+	}
 
-    err := users.FindOne(context.TODO(), bson.M{"username": username}).Decode(&result)
-    if err != nil {
-        c.Redirect(http.StatusFound, "/login?error=no_user")
-        return
-    }
-	fmt.Println("Stored Hash:", result.Auth.Hash)
-	fmt.Println("Password entered during login:", password)
-	//If the password matches, generate an auth token
-    if result.VerifyPassword(password) {
-        token, err := middleware.GenToken()
-        if err != nil {
-            c.Redirect(http.StatusFound, "/login?error=authentication_error")
-            return
-        }
-		//Setting expiration and storing the auth token in the database
-        expiration := time.Now().Add(1 * time.Hour)
-        _, err = users.UpdateOne(
-            context.TODO(),
-            bson.M{"username": username},
-            bson.M{
-                "$set": bson.M{
-                    "auth.HashedToken":     middleware.HashToken(token),
-                    "auth.TokenExpiration": expiration,
-                },
-            },
-        )
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store authentication token"})
-            return
-        }
+	token, err := database.GenerateAuthToken(username)
+	if err != nil {
+		e := fmt.Sprintf("/login?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
 
-        c.SetCookie("auth_token", token, int(time.Hour.Seconds()), "/", "localhost", false, true)
-        c.Redirect(http.StatusFound, "/dashboard") // Change this to the correct path after login
-    } else {
-        c.Redirect(http.StatusFound, "/login?error=bad_password")
-    }
+	c.SetCookie("auth_token", token, int(time.Hour.Seconds()), "/", "localhost", false, true)
+	c.Redirect(http.StatusFound, "/")
 }

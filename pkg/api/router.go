@@ -37,7 +37,7 @@ func BaseRouter() *gin.Engine {
 
 	// Public routes
 	public := router.Group("/")
-	public.Use(middleware.Logger())
+	public.Use(middleware.Logger(), middleware.AuthMiddleware())
 	{
 		public.GET("/", controllers.Index)
 		public.POST("/", controllers.Index)

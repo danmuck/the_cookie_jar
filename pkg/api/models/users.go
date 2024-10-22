@@ -26,26 +26,3 @@ func (u *User) GetPasswordHash() string {
 func (u *User) GetAuthTokenHash() string {
 	return u.Auth.AuthTokenHash
 }
-
-// constructor -->
-/*
-func NewUser(name string, password string) (*User, error) {
-	id := uuid.New()
-	s := NewStatus("I'm new here.")
-
-	hashedPassword, err := middleware.HashPassword(password)
-	if err != nil {
-		return nil, err
-	}
-	var placeholderTime time.Time
-	u := &User{
-		ID:       id.String(),
-		Username: name,
-		Status:   &s,
-		Auth:     Credentials{Hash: hashedPassword, HashedToken: "nil_auth", TokenExpiration: placeholderTime},
-		Org:      "no organization",
-	}
-
-	return u, nil
-}
-*/
