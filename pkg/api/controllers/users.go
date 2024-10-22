@@ -24,10 +24,19 @@ func POST_User(c *gin.Context) {
 		password = "pass@!word"
 	}
 
-	var user *models.User = models.NewUser(username, password)
+	user, err := models.NewUser(username, password)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{
+            "error":    err.Error(),
+            "type":     "POST",
+            "who":      username,
+            "password": password,
+        })
+        return
+    }
 	var result *models.User
 	users := database.GetCollection("users")
-	err := users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
+	err = users.FindOne(context.TODO(), gin.H{"username": username}).Decode(&result)
 	if err != nil {
 		_, err = users.InsertOne(context.TODO(), user)
 		if err != nil {
