@@ -58,6 +58,20 @@ func BaseRouter() *gin.Engine {
 		protected.DELETE("/:username", controllers.DEL_User)
 	}
 
+	classrooms := router.Group("/classroom")
+	classrooms.Use(nil)
+	{
+		classrooms.GET("/:id")
+
+		boards := classrooms.Group("/boards")
+		{
+			boards.GET("/:id")
+			boards.POST("/:id")
+
+		}
+
+	}
+
 	dev := router.Group("/dev")
 	{
 		dev.GET("/routes", func(c *gin.Context) {
