@@ -22,6 +22,8 @@ func GiveStatusForbidden(c *gin.Context, body string) {
 }
 
 func isAuthenticated(token string) (*models.User, error) {
+	// TO-DO: CHECK IF THE TOKEN IS EXPIRED
+
 	// Hashing the given token
 	hasher := sha256.New()
 	hasher.Write([]byte(token))
@@ -35,7 +37,7 @@ func isAuthenticated(token string) (*models.User, error) {
 
 func UserAuthenticationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token, err := c.Cookie("jwttoken")
+		token, err := c.Cookie("jwt_token")
 		if err != nil {
 			GiveStatusForbidden(c, "There was a problem verifying your account, please try logging in again.")
 			return

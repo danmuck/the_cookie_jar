@@ -103,6 +103,6 @@ func POST_UserLogin(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("auth_token", token, int(time.Hour.Seconds()), "/", "localhost", false, true)
+	c.SetCookie("jwt_token", token, int(time.Hour.Seconds()), "/", "localhost", false, true)
 	c.Redirect(http.StatusFound, "/")
 }

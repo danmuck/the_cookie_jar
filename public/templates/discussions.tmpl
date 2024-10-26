@@ -15,17 +15,17 @@
     {{ .body }}
   </b>
   {{ if .new_board }}
-    <form action="/classrooms/{{ .ClassroomID }}/boards/new" method="post">
-      <label for="name">New Discussion:</label><br />
-      <input type="name" id="name" name="name" required /><br />
+  <form action="/classrooms/{{ .classroom_id }}/discussions/new" method="post">
+    <label for="name">New Discussion:</label><br />
+    <input type="text" id="name" name="name" required /><br />
 
-      <button type="submit">Create</button>
-    </form>
+    <button type="submit">Create</button>
+  </form>
   {{
     end
   }}
 
-    <ul>
+  <ul>
     {{
       range.routes
     }}
@@ -41,5 +41,4 @@
       end
     }}
   </ul>
-
 </html>

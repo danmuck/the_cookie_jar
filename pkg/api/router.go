@@ -5,6 +5,8 @@ import (
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/controllers"
 	"github.com/danmuck/the_cookie_jar/pkg/api/middleware"
+	"github.com/danmuck/the_cookie_jar/pkg/api/middleware/authorization"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,23 +44,34 @@ func BaseRouter() *gin.Engine {
 	classrooms := router.Group("/classrooms", middleware.UserAuthenticationMiddleware())
 	{
 		classrooms.GET("/", controllers.ClassroomIndex)
-		classrooms.GET("/:id")
 		classrooms.POST("/new", controllers.POST_Classroom)
 
-		settings := classrooms.Group("/:id/settings")
+		// '.../classrooms/ID'
+		classroom := classrooms.Group("/:classroom_id", authorization.ClassroomVerificationMiddleware())
 		{
-			settings.GET("/")
-			settings.POST("/addstudent")
-			settings.POST("/addinstructor")
-		}
+			classroom.GET("/", controllers.ClassroomIndex)
 
-		boards := classrooms.Group("/:id/boards")
-		{
-			boards.GET("/", controllers.DiscussionIndex)
-			boards.POST("/new")
-			boards.GET("/:id")
-		}
+			// '.../classrooms/ID/discussions'
+			boards := classroom.Group("/discussions")
+			{
+				boards.GET("/", controllers.DiscussionIndex)
+				boards.POST("/new", controllers.POST_Discussion)
 
+				// '.../classrooms/ID/discussions/ID'
+				board := boards.Group("/:id")
+				{
+					board.GET("/")
+				}
+			}
+
+			// '.../classrooms/ID/settings'
+			settings := classroom.Group("/settings")
+			{
+				settings.GET("/")
+				settings.POST("/addstudent")
+				settings.POST("/addinstructor")
+			}
+		}
 	}
 
 	// NOTE: Not for production use.

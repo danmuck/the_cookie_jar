@@ -9,11 +9,12 @@ import (
 )
 
 func ClassroomIndex(c *gin.Context) {
+	id := c.Param("classroom_id")
 	c.HTML(http.StatusOK, "classroom.tmpl", gin.H{
-		"title":     "Classroom",
-		"sub_title": "INDEX [tmp]",
-		"body":      "New classroom stuff or information.",
-		"new_board": "true",
+		"title":         "Classroom",
+		"sub_title":     id,
+		"body":          "New classroom stuff or information.",
+		"new_classroom": "true",
 	})
 }
 

@@ -9,11 +9,13 @@ import (
 )
 
 func DiscussionIndex(c *gin.Context) {
+	classroomID := c.Param("classroom_id")
 	c.HTML(http.StatusOK, "discussions.tmpl", gin.H{
-		"title":     "Discussion Board",
-		"sub_title": "Some Classroom Name Probably",
-		"body":      "Welcome to ",
-		"new_board": "true",
+		"title":        "Discussion Board",
+		"sub_title":    "Some Classroom Name Probably",
+		"body":         "Welcome to ",
+		"new_board":    "true",
+		"classroom_id": classroomID,
 	})
 }
 
@@ -28,20 +30,25 @@ func GET_NewDiscussion(c *gin.Context) {
 
 func POST_Discussion(c *gin.Context) {
 	name := c.PostForm("name")
-	classroomID := c.GetString("ClassroomID")
-	if classroomID != "" {
-		err := database.AddBoard(classroomID, name)
-		if err != nil {
-			e := fmt.Sprintf("/classrooms/discussions/%v/new?error=%v", classroomID, err)
-			c.Redirect(http.StatusNotFound, e)
-		}
+	classroomID := c.Param("classroom_id")
+
+	classroom, err := database.GetClassroom(classroomID)
+	if err != nil {
+		e := fmt.Sprintf("/classrooms/%v/discussions/new?error=%v", classroomID, err)
+		c.Redirect(http.StatusTemporaryRedirect, e)
+	}
+	err = database.AddBoard(classroom.ID, name)
+	if err != nil {
+		e := fmt.Sprintf("/classrooms/%v/discussions/new?error=%v", classroom.ID, err)
+		c.Redirect(http.StatusTemporaryRedirect, e)
 	}
 
 	c.HTML(http.StatusOK, "discussions.tmpl", gin.H{
-		"title":     "Discussion Board",
-		"sub_title": "Some Classroom Name Probably",
-		"body":      "Welcome to ",
-		"new_board": "true",
+		"title":        classroom.Name,
+		"sub_title":    classroom.ID,
+		"body":         "Welcome to class",
+		"new_board":    "false",
+		"classroom_id": classroom.ID,
 	})
 }
 
