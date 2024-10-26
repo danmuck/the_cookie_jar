@@ -37,7 +37,7 @@ func BaseRouter() *gin.Engine {
 
 	// Public routes
 	public := router.Group("/")
-	public.Use(middleware.Logger())
+	public.Use(middleware.Logger(), middleware.AuthMiddleware())
 	{
 		public.GET("/", controllers.Index)
 		public.POST("/", controllers.Index)
@@ -56,6 +56,20 @@ func BaseRouter() *gin.Engine {
 		protected.POST("/:username", controllers.POST_User)
 		protected.PUT("/:id", controllers.PUT_User)
 		protected.DELETE("/:username", controllers.DEL_User)
+	}
+
+	classrooms := router.Group("/classroom")
+	classrooms.Use(nil)
+	{
+		classrooms.GET("/:id")
+
+		boards := classrooms.Group("/boards")
+		{
+			boards.GET("/:id")
+			boards.POST("/:id")
+
+		}
+
 	}
 
 	dev := router.Group("/dev")
