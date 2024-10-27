@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/controllers"
@@ -36,12 +37,12 @@ func DefaultClassroomSetup() {
 	if len(thread.CommentIDs) == 0 {
 		database.AddComment(thread.ID, user.Username, "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
 
-	}
-	if len(thread.CommentIDs) == 1 {
-
 		database.AddComment(thread.ID, user.Username, "This is the second comment in our default development DefaultClassroomSetup()")
+
 	}
 
+	url_string := fmt.Sprintf("DEV_URL_STRING: \nhttp://localhost:8080/classrooms/%v/discussions/%v/threads/%v/", classroom.ID, board.ID, thread.ID)
+	fmt.Println(url_string)
 }
 
 func BaseRouter() *gin.Engine {
