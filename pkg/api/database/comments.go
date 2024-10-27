@@ -33,11 +33,17 @@ func AddComment(threadID string, username string, text string) error {
 		LikedUserIDs: make([]string, 0),
 		Date:         time.Now(),
 	}
-	thread.CommentIDs = append(thread.CommentIDs, comment.ID)
 
 	// Trying to add comment to database
 	commentCollection := GetCollection("comments")
 	_, err = commentCollection.InsertOne(context.TODO(), comment)
+	if err != nil {
+		return err
+	}
+
+	// Associating thread with the comment directly
+	thread.CommentIDs = append(thread.CommentIDs, comment.ID)
+	err = UpdateThread(thread)
 	if err != nil {
 		return err
 	}

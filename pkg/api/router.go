@@ -13,9 +13,29 @@ import (
 
 func DefaultClassroomSetup() {
 	database.AddUser("admin", "password")
-	database.AddClassroom("admin", "dev_class")
+	user, _ := database.GetUser("admin")
 
-	database.AddBoard()
+	if len(user.ClassroomIDs) == 0 {
+		database.AddClassroom(user.Username, "dev_class")
+		user, _ = database.GetUser(user.Username)
+	}
+	classroom, _ := database.GetClassroom(user.ClassroomIDs[0])
+
+	if len(classroom.BoardIDs) == 0 {
+		database.AddBoard(classroom.ID, "dev_discussion")
+		classroom, _ = database.GetClassroom(user.ClassroomIDs[0])
+	}
+	board, _ := database.GetBoard(classroom.BoardIDs[0])
+
+	if len(board.ThreadIDs) == 0 {
+		database.AddThread(board.ID, "dev_thread")
+		board, _ = database.GetBoard(classroom.BoardIDs[0])
+	}
+	thread, _ := database.GetThread(board.ThreadIDs[0])
+
+	if len(thread.CommentIDs) == 0 {
+		database.AddComment(thread.ID, user.ID, "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
+	}
 }
 
 func BaseRouter() *gin.Engine {
@@ -33,7 +53,7 @@ func BaseRouter() *gin.Engine {
 	public := router.Group("/")
 	{
 		public.GET("/", controllers.Index)
-		public.GET("/tmp", controllers.TestIndex)
+		public.GET("/tmp", controllers.DevIndex)
 
 		public.GET("/register", controllers.GET_UserRegistration)
 		public.POST("/register", controllers.POST_UserRegistration)
