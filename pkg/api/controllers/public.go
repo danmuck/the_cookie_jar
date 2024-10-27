@@ -15,14 +15,14 @@ func PingPong(c *gin.Context) {
 
 func RouteIndex(c *gin.Context) {
 	if c.Query("new_user") == "true" {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		c.HTML(http.StatusOK, "dev_index.tmpl", gin.H{
 			"title":     "Welcome to the_cookie_jar API!",
 			"sub_title": "Learning Management System",
 			"body":      "Thanks for registering",
 		})
 		return
 	}
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.HTML(http.StatusOK, "dev_index.tmpl", gin.H{
 		"title":           "Welcome to the_cookie_jar API!",
 		"sub_title":       "Learning Management System",
 		"body":            "TODO",
@@ -30,24 +30,24 @@ func RouteIndex(c *gin.Context) {
 	})
 }
 
-func Index(c *gin.Context) {
+func DevIndex(c *gin.Context) {
 	if c.Query("new_user") == "true" {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		c.HTML(http.StatusOK, "dev_index.tmpl", gin.H{
 			"title":     "Welcome to the_cookie_jar API!",
 			"sub_title": "Learning Management System",
 			"body":      "Thanks for registering",
 		})
 		return
 	}
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.HTML(http.StatusOK, "dev_index.tmpl", gin.H{
 		"title":           "Welcome to the_cookie_jar API!",
 		"sub_title":       "Learning Management System",
 		"body":            "TODO",
 		"register_button": "true",
 	})
 }
-func TestIndex(c *gin.Context) {
-	c.HTML(http.StatusOK, "tmp_index.tmpl", gin.H{
+func Index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"title":           "Welcome to the_cookie_jar API!",
 		"sub_title":       "Learning Management System",
 		"body":            "TODO",
