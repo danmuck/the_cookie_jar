@@ -22,19 +22,29 @@
         </nav>
         <div class="discussion-wrapper">
             <div class="discussion-post">   
-                <div class="post-controls">
-                    <button>Like</button>
-                    <button>Dislike</button>
-                    <button>Comment</button>
+                <div class="post-title">
+                    <h2>{{ .current_thread.Name }}</h2>
                 </div>
-                <div class="post-content">
-                    <div class="post-title">
-                        <h2>Test Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion PostTest Header of Discussion Post</h2>
-                    </div>
-                    <div class="post-body">
-                        <p>Test Body of Discussion Post</p>
-                    </div>
-                </div>
+                <ul>
+                    {{ range.all_comments }}
+                    <li>
+                        <div class="post-controls">
+                            <button>Like</button>
+                            <button>Dislike</button>
+                            <button>Comment</button>
+                        </div>
+                        <div class="post-content">
+                            <div class="post-body">
+                                <h3>{{ .UserID }}</h3>
+                                <p> {{ .Text }}</p>
+                                {{ range.LikedUserIDs }}
+                                    <p> {{ . }}</p>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </li>
+                    {{ end }}
+                </ul>
             </div>
         </div>
         <aside class="discussion-controls">
