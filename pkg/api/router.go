@@ -4,11 +4,19 @@ import (
 	"net/http"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/controllers"
+	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/danmuck/the_cookie_jar/pkg/api/middleware"
 	"github.com/danmuck/the_cookie_jar/pkg/api/middleware/authorization"
 
 	"github.com/gin-gonic/gin"
 )
+
+func DefaultClassroomSetup() {
+	database.AddUser("admin", "password")
+	database.AddClassroom("admin", "dev_class")
+
+	database.AddBoard()
+}
 
 func BaseRouter() *gin.Engine {
 	router := gin.Default()
@@ -25,7 +33,7 @@ func BaseRouter() *gin.Engine {
 	public := router.Group("/")
 	{
 		public.GET("/", controllers.Index)
-		public.GET("/tmp", controllers.DevIndex)
+		public.GET("/tmp", controllers.TestIndex)
 
 		public.GET("/register", controllers.GET_UserRegistration)
 		public.POST("/register", controllers.POST_UserRegistration)
