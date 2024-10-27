@@ -1,9 +1,10 @@
 package models
 
 type User struct {
-	ID       string      `bson:"_id" json:"id"`
-	Username string      `bson:"username" json:"username" form:"username"`
-	Auth     Credentials `bson:"auth" json:"auth"`
+	ID           string      `bson:"_id" json:"id"`
+	Username     string      `bson:"username" json:"username" form:"username"`
+	ClassroomIDs []string    `bson:"classroom_ids" json:"classroom_ids"`
+	Auth         Credentials `bson:"auth" json:"auth"`
 }
 
 type Credentials struct {
