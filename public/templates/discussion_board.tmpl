@@ -31,7 +31,7 @@
                         <li>
                             <div class="post-body">
                                 <h3>{{ .Username }}</h3>
-                                <p> {{ .Text }}</p>
+                                <p style="margin: 0 .05rem;"> {{ .Text }}</p>
                                 {{ range.LikedUserIDs }}
                                     <p> {{ . }}</p>
                                 {{ end }}
@@ -40,8 +40,8 @@
                                     <!-- <button>Dislike</button> -->
                                     <!-- <button>Comment</button> -->
                                 </div>
-                                <hr>
                             </div>
+                            <br>
                         </li>
                         {{ end }}
                     </ul>

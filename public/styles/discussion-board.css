@@ -10,13 +10,13 @@ body {
 
 ul {
     list-style-type: none;
-    padding-left: 5px, 5px;
+    padding-left: 5px;
     /* Optional: removes default padding */
-    margin: 5px, 5px;
+    margin: 5px;
     /* Optional: removes default margin */
 }
 hr {
-    padding: 0px, 20px;
+    padding: 0px 20px;
 }
 
 .wrapper {
@@ -102,6 +102,7 @@ hr {
     align-items: flex-start;
     background-color: wheat;
     border: 4px solid gold;
+    border-radius: 20px;
     height: fit-content;
     width: 95%;
 }
@@ -115,7 +116,7 @@ hr {
     justify-content: flex-start;
     flex-direction: row;
     flex: 1 0 auto;
-    padding-left: 10px, 10px;
+    padding-left: 10px;
     /* background-color: red; */
 }
 
@@ -126,7 +127,7 @@ hr {
 .post-content {
     position: relative;
     min-width: 0;
-    margin: 5px, 5px;
+    margin: 5px 5px;
 }
 
 .post-content .post-title {
@@ -143,7 +144,10 @@ hr {
     height: 70%;
     bottom: 0;
     flex: 6 0 auto;
+    border-radius: 20px;
+    border: 1px solid rgb(246, 117, 169);
     background-color: pink;
+    padding: 10px;
 }
 
 .post-title,
