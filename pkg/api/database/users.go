@@ -37,8 +37,8 @@ func AddUser(username string, password string) error {
 	// Trying to add user to the database assuming they don't already exist
 	userCollection := GetCollection("users")
 	err = userCollection.FindOne(context.TODO(), gin.H{"username": username}).Decode(&user)
-	if err != nil {
-		return err
+	if err == nil {
+		return fmt.Errorf("username already exists")
 	}
 	_, err = userCollection.InsertOne(context.TODO(), user)
 	if err != nil {

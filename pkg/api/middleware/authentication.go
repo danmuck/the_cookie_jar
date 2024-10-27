@@ -1,32 +1,55 @@
 package middleware
 
 import (
-	"fmt"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"net/http"
 
+	"github.com/danmuck/the_cookie_jar/pkg/api/database"
+	"github.com/danmuck/the_cookie_jar/pkg/api/models"
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
-	fmt.Println(">> [middleware] loaded AuthMiddleware .. ")
-	return func(c *gin.Context) {
-		// Check if the user is authenticated
-		if isAuthenticated(c) {
-			c.Header("X-Content-Type-Options", "nosniff")
-			c.Next()
-			return
-		}
-		// User is not authenticated, return an error response
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-	}
+func GiveStatusForbidden(c *gin.Context, body string) {
+	c.HTML(http.StatusForbidden, "index.tmpl", gin.H{
+		"title":     "Welcome to the_cookie_jar API!",
+		"sub_title": "Learning Management System",
+		"body":      body,
+		"error":     "Unauthorized",
+	})
+	c.Abort()
 }
 
-func isAuthenticated(c *gin.Context) bool {
-	fmt.Println(">> [middleware] checking isAuthenticated .. ")
-	for k, v := range c.Keys {
-		fmt.Printf(">> [middleware] k: %v \nv: %v", k, v)
+func isAuthenticated(token string) (*models.User, error) {
+	// TO-DO: CHECK IF THE TOKEN IS EXPIRED
+
+	// Hashing the given token
+	hasher := sha256.New()
+	hasher.Write([]byte(token))
+	tokenHash := hex.EncodeToString(hasher.Sum(nil))
+
+	// Trying to grab a user that has that hashed token
+	var user *models.User
+	err := database.GetCollection("users").FindOne(context.TODO(), gin.H{"auth.hashed_token": tokenHash}).Decode(&user)
+	return user, err
+}
+
+func UserAuthenticationMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token, err := c.Cookie("jwt_token")
+		if err != nil {
+			GiveStatusForbidden(c, "There was a problem verifying your account, please try logging in again.")
+			return
+		}
+
+		user, err := isAuthenticated(token)
+		if err != nil {
+			GiveStatusForbidden(c, "There was a problem verifying your account, please try logging in again.")
+			return
+		}
+
+		c.Set("username", user.Username)
+		c.Next()
 	}
-	// Check if the user is authenticated based on a JWT token, session, or any other mechanism
-	// Return true if the user is authenticated, false otherwise
-	return true
 }
