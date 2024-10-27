@@ -16,6 +16,7 @@ func BaseRouter() *gin.Engine {
 	// Loading our templates and CSS stylesheets
 	router.LoadHTMLGlob("/root/public/templates/*")
 	router.Static("/public/styles", "./public/styles")
+	router.Static("/public/assets", "./public/assets")
 
 	// Middleware that will be used by ALL routes
 	router.Use(middleware.DefaultMiddleware())
@@ -24,6 +25,8 @@ func BaseRouter() *gin.Engine {
 	public := router.Group("/")
 	{
 		public.GET("/", controllers.Index)
+		public.GET("/tmp", controllers.TestIndex)
+
 		public.GET("/register", controllers.GET_UserRegistration)
 		public.POST("/register", controllers.POST_UserRegistration)
 		public.GET("/login", controllers.GET_UserLogin)
