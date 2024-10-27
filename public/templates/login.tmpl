@@ -1,0 +1,29 @@
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/public/styles/public.css" />
+  </head>
+  <h1>User Login</h1>
+
+  <h2>
+    {{ .title }}
+  </h2>
+  <hr />
+  <h3>
+    {{ .sub_title }}
+  </h3>
+  <body>
+    {{ if .error }}
+    <h3 style="color: rgb(177, 13, 13)">{{ .error }}</h3>
+    {{ end }}
+
+    <form action="/login" method="post">
+      <label for="username">Username:</label><br />
+      <input type="text" id="username" name="username" required /><br />
+
+      <label for="password">Password:</label><br />
+      <input type="password" id="password" name="password" required /><br />
+
+      <button type="submit">Login!</button>
+    </form>
+  </body>
+</html>

@@ -14,10 +14,13 @@
   <b style="color: rgb(208, 76, 10)">
     {{ .body }}
   </b>
-  {{ if .register_button }}
-  <button type="button">
-    <a href="/register"> Register </a>
-  </button>
+  {{ if .new_classroom }}
+  <form action="/classrooms/new" method="post">
+    <label for="name">New Classroom:</label><br />
+    <input type="text" id="name" name="name" required /><br />
+
+    <button type="submit">Create</button>
+  </form>
   {{
     end
   }}
