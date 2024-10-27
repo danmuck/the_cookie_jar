@@ -46,6 +46,14 @@ func Index(c *gin.Context) {
 		"register_button": "true",
 	})
 }
+func TestIndex(c *gin.Context) {
+	c.HTML(http.StatusOK, "tmp_index.tmpl", gin.H{
+		"title":           "Welcome to the_cookie_jar API!",
+		"sub_title":       "Learning Management System",
+		"body":            "TODO",
+		"register_button": "true",
+	})
+}
 
 func GET_UserRegistration(c *gin.Context) {
 	err := c.Query("error")
