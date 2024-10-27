@@ -40,7 +40,7 @@ func BaseRouter() *gin.Engine {
 		protected.DELETE("/:username", controllers.DEL_User)
 	}
 
-	// Authenticated classroom routes
+	// '.../classrooms'
 	classrooms := router.Group("/classrooms", middleware.UserAuthenticationMiddleware())
 	{
 		classrooms.GET("/", controllers.ClassroomIndex)
@@ -55,12 +55,27 @@ func BaseRouter() *gin.Engine {
 			boards := classroom.Group("/discussions")
 			{
 				boards.GET("/", controllers.DiscussionIndex)
-				boards.POST("/new", controllers.POST_Discussion)
+				boards.POST("/new", controllers.POST_Discussion, authorization.BoardCreationMiddleware())
 
 				// '.../classrooms/ID/discussions/ID'
-				board := boards.Group("/:id")
+				board := boards.Group("/:board_id", authorization.BoardVerificationMiddleware())
 				{
 					board.GET("/")
+
+					// '.../classrooms/ID/discussions/ID/threads
+					threads := board.Group("/threads")
+					{
+						threads.GET("/")
+						threads.POST("/new")
+
+						// '.../classrooms/ID/discussions/ID/threads/ID
+						thread := threads.Group("/:thread_id", authorization.ThreadVerificationMiddleware())
+						{
+							thread.GET("/")
+							threads.POST("/comment")
+							threads.POST("/like")
+						}
+					}
 				}
 			}
 

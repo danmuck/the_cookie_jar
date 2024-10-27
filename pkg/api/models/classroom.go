@@ -14,3 +14,7 @@ type Classroom struct {
 func (c *Classroom) ContainsUserID(id string) bool {
 	return c.ProfessorID == id || utils.Contains(c.InstructorIDs, id) || utils.Contains(c.StudentIDs, id)
 }
+
+func (c *Classroom) IsUserIDPrivileged(id string) bool {
+	return c.ProfessorID == id || utils.Contains(c.InstructorIDs, id)
+}
