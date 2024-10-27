@@ -28,7 +28,7 @@ func AddComment(threadID string, username string, text string) error {
 	// Creating the new comment
 	comment := &models.Comment{
 		ID:           uuid.New().String(),
-		UserID:       user.ID,
+		Username:     user.Username,
 		Text:         text,
 		LikedUserIDs: make([]string, 0),
 		Date:         time.Now(),

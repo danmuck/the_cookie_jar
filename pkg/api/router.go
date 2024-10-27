@@ -34,17 +34,24 @@ func DefaultClassroomSetup() {
 	thread, _ := database.GetThread(board.ThreadIDs[0])
 
 	if len(thread.CommentIDs) == 0 {
-		database.AddComment(thread.ID, user.ID, "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
+		database.AddComment(thread.ID, user.Username, "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
+
 	}
+	if len(thread.CommentIDs) == 1 {
+
+		database.AddComment(thread.ID, user.Username, "This is the second comment in our default development DefaultClassroomSetup()")
+	}
+
 }
 
 func BaseRouter() *gin.Engine {
 	router := gin.Default()
-
+	DefaultClassroomSetup()
 	// Loading our templates and CSS stylesheets
 	router.LoadHTMLGlob("/root/public/templates/*")
 	router.Static("/public/styles", "./public/styles")
 	router.Static("/public/assets", "./public/assets")
+	router.StaticFile("/public/functions.js", "./public/functions.js")
 
 	// Middleware that will be used by ALL routes
 	router.Use(middleware.DefaultMiddleware())
@@ -102,7 +109,7 @@ func BaseRouter() *gin.Engine {
 						// '.../classrooms/ID/discussions/ID/threads/ID
 						thread := threads.Group("/:thread_id", authorization.ThreadVerificationMiddleware())
 						{
-							thread.GET("/")
+							thread.GET("/", controllers.GET_Thread)
 							threads.POST("/comment")
 							threads.POST("/like")
 						}

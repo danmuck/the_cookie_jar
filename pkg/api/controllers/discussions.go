@@ -32,11 +32,10 @@ func GET_Thread(c *gin.Context) {
 	}
 	all_comments := make([]models.Comment, 0)
 	for _, commentID := range thread.CommentIDs {
-		comment, err := database.GetComment(commentID)
-		if err != nil {
-			all_comments = append(all_comments, *comment)
-		}
+		comment, _ := database.GetComment(commentID)
+		all_comments = append(all_comments, *comment)
 	}
+	fmt.Println(all_comments)
 	c.HTML(http.StatusOK, "discussion_board.tmpl", gin.H{
 		"title":          "Discussion Board",
 		"sub_title":      "Some Classroom Name Probably",

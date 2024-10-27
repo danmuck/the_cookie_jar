@@ -18,7 +18,7 @@ type Thread struct {
 
 type Comment struct {
 	ID           string    `bson:"_id" json:"id"`
-	UserID       string    `bson:"user" json:"user"`
+	Username     string    `bson:"username" json:"username"`
 	Text         string    `bson:"text" json:"text"`
 	LikedUserIDs []string  `bson:"likes" json:"likes"`
 	Date         time.Time `bson:"date" json:"date"`

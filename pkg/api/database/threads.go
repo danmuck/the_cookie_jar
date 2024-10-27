@@ -33,7 +33,7 @@ func AddThread(boardID string, name string) error {
 	}
 
 	// Associating board with the thread directly
-	board.ThreadIDs = append(board.ThreadIDs, board.ID)
+	board.ThreadIDs = append(board.ThreadIDs, thread.ID)
 	err = UpdateBoard(board)
 	if err != nil {
 		return err
