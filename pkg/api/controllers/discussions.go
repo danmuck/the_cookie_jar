@@ -19,6 +19,12 @@ func DiscussionIndex(c *gin.Context) {
 	})
 }
 
+// Threads
+func GET_Threads(c *gin.Context) {
+
+}
+
+// Discussions
 func GET_NewDiscussion(c *gin.Context) {
 	err := c.Query("error")
 	if err != "" {

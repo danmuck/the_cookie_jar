@@ -25,7 +25,7 @@ func BaseRouter() *gin.Engine {
 	public := router.Group("/")
 	{
 		public.GET("/", controllers.Index)
-		public.GET("/tmp", controllers.TestIndex)
+		public.GET("/tmp", controllers.DevIndex)
 
 		public.GET("/register", controllers.GET_UserRegistration)
 		public.POST("/register", controllers.POST_UserRegistration)
