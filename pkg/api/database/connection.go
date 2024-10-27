@@ -26,7 +26,8 @@ MongoDB client and database name (as string).
 func connectToDatabase() (*mongo.Client, string) {
 	// Loading environment file
 	if err := godotenv.Load(".env"); err != nil {
-		panic(fmt.Errorf("cannot find environment file [.env]::[MONGODB_URI, DB_NAME] %v", err))
+		// panic(fmt.Errorf("cannot find environment file [.env]::[MONGODB_URI, DB_NAME] %v", err))
+		fmt.Println("No concern: ", err)
 	}
 
 	// Setting Stable API version to 1 for server

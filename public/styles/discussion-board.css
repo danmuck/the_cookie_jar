@@ -105,6 +105,7 @@ hr {
     border-radius: 20px;
     height: fit-content;
     width: 95%;
+    overflow: auto;
 }
 
 .discussion-post:first-child {
