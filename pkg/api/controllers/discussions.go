@@ -6,6 +6,7 @@ import (
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/danmuck/the_cookie_jar/pkg/api/models"
+	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -87,4 +88,40 @@ func PUT_Discussion(c *gin.Context) {
 
 func DELETE_Discussion(c *gin.Context) {
 
+}
+
+func POST_Comment(c *gin.Context) {
+	user, _ := database.GetUser(c.GetString("username"))
+	classroomID := c.Param("classroom_id")
+	boardID := c.Param("board_id")
+	threadID := c.Param("thread_id")
+	text := c.PostForm("text")
+
+	database.AddComment(threadID, user.Username, text)
+	e := fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroomID, boardID, threadID)
+	c.Redirect(http.StatusTemporaryRedirect, e)
+}
+
+func POST_CommentLike(c *gin.Context) {
+	user, _ := database.GetUser(c.GetString("username"))
+	classroomID := c.Param("classroom_id")
+	boardID := c.Param("board_id")
+	threadID := c.Param("thread_id")
+	commentID := c.PostForm("comment_id")
+
+	comment, err := database.GetComment(commentID)
+	if err != nil {
+		c.HTML(http.StatusOK, "discussion_board.tmpl", gin.H{
+			"error": err,
+		})
+	}
+
+	if utils.Contains(comment.LikedUserIDs, user.ID) {
+		comment.LikedUserIDs = utils.RemoveItem(comment.LikedUserIDs, user.ID)
+	} else {
+		comment.LikedUserIDs = append(comment.LikedUserIDs, user.ID)
+	}
+
+	e := fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroomID, boardID, threadID)
+	c.Redirect(http.StatusTemporaryRedirect, e)
 }
