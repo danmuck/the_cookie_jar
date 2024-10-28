@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"net/http"
+	"os"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/danmuck/the_cookie_jar/pkg/api/models"
@@ -20,9 +21,35 @@ func POST_User(c *gin.Context) {
 	username := c.Param("username")
 	password := c.Param("password")
 	if password == "" {
-		password = "pass@!word"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  "cannot use blank password",
+			"result": "",
+		})
+		return
 	}
 	err := database.AddUser(username, password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":    err.Error(),
+			"type":     "POST",
+			"who":      username,
+			"password": password,
+		})
+		return
+	}
+
+	user, err := database.GetUser(username)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":    err.Error(),
+			"type":     "POST",
+			"who":      username,
+			"password": password,
+		})
+		return
+	}
+	user.ClassroomIDs = append(user.ClassroomIDs, os.Getenv("dev_class_id"))
+	err = database.UpdateUser(user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":    err.Error(),

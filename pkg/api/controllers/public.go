@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
@@ -81,6 +82,34 @@ func POST_UserRegistration(c *gin.Context) {
 		return
 	}
 
+	user, err := database.GetUser(username)
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+	user.ClassroomIDs = append(user.ClassroomIDs, os.Getenv("dev_class_id"))
+	err = database.UpdateUser(user)
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+
+	classroom, err := database.GetClassroom(os.Getenv("dev_class_id"))
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+	classroom.StudentIDs = append(classroom.StudentIDs, user.ID)
+	err = database.UpdateClassroom(classroom)
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+
 	c.Redirect(http.StatusFound, "/?new_user=true")
 }
 
@@ -111,8 +140,8 @@ func POST_UserLogin(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("jwt_token", token, int(time.Hour.Seconds()), "/", "localhost", false, true)
-	c.Redirect(http.StatusFound, "/")
+	c.SetCookie("jwt_token", token, int(time.Hour.Seconds()), "/", "/", false, true)
+	c.Redirect(http.StatusSeeOther, "/")
 }
 
 func POST_UserLogout(c *gin.Context) {
@@ -135,6 +164,6 @@ func POST_UserLogout(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("jwt_token", "", 1, "/", "localhost", false, true)
+	c.SetCookie("jwt_token", "", 1, "/", "/", false, true)
 	c.Redirect(http.StatusSeeOther, "/")
 }

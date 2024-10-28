@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/controllers"
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
@@ -40,8 +41,8 @@ func DefaultClassroomSetup() {
 		database.AddComment(thread.ID, user.Username, "This is the second comment in our default development DefaultClassroomSetup()")
 	}
 
-	url_string := fmt.Sprintf("DEV_URL_STRING: \nhttp://localhost:8080/classrooms/%v/discussions/%v/threads/%v/", classroom.ID, board.ID, thread.ID)
-	fmt.Println(url_string)
+	os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
+	os.Setenv("dev_class_id", classroom.ID)
 }
 
 func BaseRouter() *gin.Engine {
@@ -67,6 +68,7 @@ func BaseRouter() *gin.Engine {
 		public.GET("/login", controllers.GET_UserLogin)
 		public.POST("/login", controllers.POST_UserLogin)
 		public.POST("/logout", middleware.UserAuthenticationMiddleware(), controllers.POST_UserLogout)
+		public.GET("/classrooms/discussions", middleware.UserAuthenticationMiddleware(), func(c *gin.Context) { c.Redirect(http.StatusMovedPermanently, os.Getenv("dev_url")) })
 	}
 
 	// Authenticated user-data routes
