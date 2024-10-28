@@ -5,14 +5,14 @@
     <link rel="shortcut icon" type="image/x-icon" href="/public/assets/logo.jpg">
     <link rel="stylesheet" href="/public/styles/index.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <script src="/public/functions.js"></script> -->
+    <script src="/public/functions.js"></script>
     <title>The Cookie Jar LMS</title>
 </head>
 <body>
     <div class="wrapper">
         <nav class='navbar'>
             <img src="/public/assets/logo.jpg" alt='Cookie Jar LMS Logo' id='logo'></img>
-            <a href='/' class='navchild'>Home</a>
+            <a href='/' class='navchild' id="home_button">Home</a>
             <a href='/classrooms' class='navchild'>Courses</a>
             <a href='/assignments' class='navchild'>Assignments</a>
             <a href='/classrooms/discussions' class='navchild'>Discussion Board</a>
@@ -25,7 +25,7 @@
                 </button>
             </form>
             {{ if .username }}
-                <h4 style="color: aqua;"> Logged in as: {{ .username }}</h4>
+                <h4 style="color: aqua;" id="if_logged_in"> Logged in as: {{ .username }}</h4>
             {{ end }}
         </nav>
         <div class="account_management">

@@ -42,7 +42,6 @@ func DefaultClassroomSetup() {
 
 	os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
 	os.Setenv("dev_class_id", classroom.ID)
-	fmt.Println("BORKED: ", os.Getenv("dev_url"), os.Getenv("dev_class_id"))
 }
 
 func BaseRouter() *gin.Engine {

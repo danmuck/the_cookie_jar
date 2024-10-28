@@ -11,12 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-/*
-	TODO:
-	if user is not logged in, redirect to login page
-
-*/
-
 func POST_User(c *gin.Context) {
 	username := c.Param("username")
 	password := c.Param("password")
@@ -75,6 +69,7 @@ func DEL_User(c *gin.Context) {
 	err := coll.FindOneAndDelete(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		c.String(http.StatusNotFound, "User does not exist")
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
