@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/models"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
