@@ -117,6 +117,7 @@ func POST_UserLogin(c *gin.Context) {
 
 func POST_UserLogout(c *gin.Context) {
 	user, err := database.GetUser(c.GetString("username"))
+	fmt.Println("USERNAME: ", c.GetString("username"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":  err.Error(),
@@ -135,6 +136,6 @@ func POST_UserLogout(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("jwt_token", "deleted", 0, "/", "localhost", false, true)
-	c.Redirect(http.StatusFound, "/")
+	c.SetCookie("jwt_token", "", 1, "/", "localhost", false, true)
+	c.Redirect(http.StatusSeeOther, "/")
 }

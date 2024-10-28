@@ -38,42 +38,6 @@ func DefaultClassroomSetup() {
 		database.AddComment(thread.ID, user.Username, "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
 
 		database.AddComment(thread.ID, user.Username, "This is the second comment in our default development DefaultClassroomSetup()")
-
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-		database.AddComment(thread.ID, user.Username, "Testing for a bunch of threads on one page ... ")
-
 	}
 
 	url_string := fmt.Sprintf("DEV_URL_STRING: \nhttp://localhost:8080/classrooms/%v/discussions/%v/threads/%v/", classroom.ID, board.ID, thread.ID)
@@ -102,6 +66,7 @@ func BaseRouter() *gin.Engine {
 		public.POST("/register", controllers.POST_UserRegistration)
 		public.GET("/login", controllers.GET_UserLogin)
 		public.POST("/login", controllers.POST_UserLogin)
+		public.POST("/logout", middleware.UserAuthenticationMiddleware(), controllers.POST_UserLogout)
 	}
 
 	// Authenticated user-data routes
@@ -146,8 +111,8 @@ func BaseRouter() *gin.Engine {
 						thread := threads.Group("/:thread_id", authorization.ThreadVerificationMiddleware())
 						{
 							thread.GET("/", controllers.GET_Thread)
-							threads.POST("/comment")
-							threads.POST("/like")
+							thread.POST("/comment", controllers.POST_Comment)
+							thread.POST("/like", controllers.POST_CommentLike)
 						}
 					}
 				}

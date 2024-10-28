@@ -18,13 +18,22 @@
             <a href='/classrooms/{{ .classroom_id }}/discussions' class='navchild'>Discussion Board</a>
             <a href='/profile' class='navchild'>Profile</a>
             <a href='/support' class='navchild'>Support</a>
-            <a href="/logout" id="logout">Logout</a>
+            <!-- <a href="/logout" id="logout">Logout</a> -->
+            <form action="/logout" method="post" style="display: inline;">
+                <button type="submit" id="logout">
+                    Logout
+                </button>
+            </form>
         </nav>
         <div class="discussion-wrapper">
             <div class="discussion-post">   
                 <div class="post-title">
                     <h2>{{ .current_thread.Name }}</h2>
                 </div>
+                <form action="comment" method="post" enctype="application/x-www-form-urlencoded">
+                    <input type="text" name="text" /> 
+                    <button type="submit">Post Comment</button>
+                </form>
                 <div class="post-content">
                     <ul>
                         {{ range.all_comments }}
@@ -32,13 +41,16 @@
                             <div class="post-body">
                                 <h3>{{ .Username }}</h3>
                                 <p style="margin: 0 .05rem;"> {{ .Text }}</p>
-                                {{ range.LikedUserIDs }}
+                                <!-- {{ range.LikedUserIDs }}
                                     <p> {{ . }}</p>
-                                {{ end }}
+                                {{ end }} -->
                                 <div class="post-controls">
-                                    <button>Like</button>
                                     <!-- <button>Dislike</button> -->
                                     <!-- <button>Comment</button> -->
+                                    <form action="like" method="post" enctype="application/x-www-form-urlencoded">
+                                        <input type="hidden" name="comment_id" value="{{ .ID }}" /> 
+                                        <button type="submit">Likes: {{ len .LikedUserIDs }}</button>
+                                    </form>
                                 </div>
                             </div>
                             <br>

@@ -36,7 +36,7 @@ func GET_Thread(c *gin.Context) {
 		comment, _ := database.GetComment(commentID)
 		all_comments = append(all_comments, *comment)
 	}
-	fmt.Println(all_comments)
+
 	c.HTML(http.StatusOK, "discussion_board.tmpl", gin.H{
 		"title":          "Discussion Board",
 		"sub_title":      "Some Classroom Name Probably",
@@ -99,7 +99,7 @@ func POST_Comment(c *gin.Context) {
 
 	database.AddComment(threadID, user.Username, text)
 	e := fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroomID, boardID, threadID)
-	c.Redirect(http.StatusTemporaryRedirect, e)
+	c.Redirect(http.StatusSeeOther, e)
 }
 
 func POST_CommentLike(c *gin.Context) {
@@ -121,7 +121,8 @@ func POST_CommentLike(c *gin.Context) {
 	} else {
 		comment.LikedUserIDs = append(comment.LikedUserIDs, user.ID)
 	}
+	_ = database.UpdateComment(comment)
 
 	e := fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroomID, boardID, threadID)
-	c.Redirect(http.StatusTemporaryRedirect, e)
+	c.Redirect(http.StatusSeeOther, e)
 }
