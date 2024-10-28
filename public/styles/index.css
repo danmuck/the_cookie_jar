@@ -124,7 +124,7 @@ body {
 }
 
 #logout {
-    display: none;
+    display: block;
     position: absolute;
     right: 2rem;
     border: 2px solid white;

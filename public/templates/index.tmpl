@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/public/styles/index.css">
     <link rel="shortcut icon" type="image/x-icon" href="/public/assets/logo.jpg">
+    <link rel="stylesheet" href="/public/styles/index.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/public/functions.js"></script>
+    <!-- <script src="/public/functions.js"></script> -->
     <title>The Cookie Jar LMS</title>
 </head>
 <body>
@@ -18,7 +18,12 @@
             <a href='/classrooms/{{ .classroom_id }}/discussions' class='navchild'>Discussion Board</a>
             <a href='/profile' class='navchild'>Profile</a>
             <a href='/support' class='navchild'>Support</a>
-            <a href="/logout" id="logout">Logout</a>
+            <!-- <a href="/logout" id="logout">Logout</a> -->
+            <form action="/logout" method="post">
+                <button type="submit" id="logout">
+                    Logout
+                </button>
+            </form>
         </nav>
         <div class="account_management">
             <div class="register">

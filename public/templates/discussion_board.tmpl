@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <link rel="shortcut icon" type="image/x-icon" href="/public/assets/logo.jpg">
     <link rel="stylesheet" href="/public/styles/discussion-board.css">
-    <script src="/public/functions.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="/public/functions.js"></script> -->
     <title>The Cookie Jar Discussion Board</title>
 </head>
 <body>
@@ -13,13 +13,13 @@
         <nav class='navbar'>
             <img src="/public/assets/logo.jpg" alt='Cookie Jar LMS Logo' id='logo'></img>
             <a href='/' class='navchild'>Home</a>
-            <a href='/courses' class='navchild'>Courses</a>
+            <a href='/classrooms' class='navchild'>Courses</a>
             <a href='/assignments' class='navchild'>Assignments</a>
             <a href='/classrooms/{{ .classroom_id }}/discussions' class='navchild'>Discussion Board</a>
             <a href='/profile' class='navchild'>Profile</a>
             <a href='/support' class='navchild'>Support</a>
             <!-- <a href="/logout" id="logout">Logout</a> -->
-            <form action="/logout" method="post" style="display: inline;">
+            <form action="/logout" method="post">
                 <button type="submit" id="logout">
                     Logout
                 </button>
