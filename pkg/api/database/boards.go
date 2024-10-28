@@ -24,11 +24,17 @@ func AddBoard(classroomID string, name string) error {
 		Name:      name,
 		ThreadIDs: make([]string, 0),
 	}
-	classroom.BoardIDs = append(classroom.BoardIDs, board.ID)
 
 	// Trying to add board to database
 	boardCollection := GetCollection("boards")
 	_, err = boardCollection.InsertOne(context.TODO(), board)
+	if err != nil {
+		return err
+	}
+
+	// Associating classroom with the board directly
+	classroom.BoardIDs = append(classroom.BoardIDs, board.ID)
+	err = UpdateClassroom(classroom)
 	if err != nil {
 		return err
 	}

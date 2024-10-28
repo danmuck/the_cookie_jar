@@ -1,21 +1,58 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/controllers"
+	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/danmuck/the_cookie_jar/pkg/api/middleware"
 	"github.com/danmuck/the_cookie_jar/pkg/api/middleware/authorization"
 
 	"github.com/gin-gonic/gin"
 )
 
+func DefaultClassroomSetup() {
+	database.AddUser("admin", "password")
+	user, _ := database.GetUser("admin")
+
+	if len(user.ClassroomIDs) == 0 {
+		database.AddClassroom(user.Username, "dev_class")
+		user, _ = database.GetUser(user.Username)
+	}
+	classroom, _ := database.GetClassroom(user.ClassroomIDs[0])
+
+	if len(classroom.BoardIDs) == 0 {
+		database.AddBoard(classroom.ID, "dev_discussion")
+		classroom, _ = database.GetClassroom(user.ClassroomIDs[0])
+	}
+	board, _ := database.GetBoard(classroom.BoardIDs[0])
+
+	if len(board.ThreadIDs) == 0 {
+		database.AddThread(board.ID, "dev_thread")
+		board, _ = database.GetBoard(classroom.BoardIDs[0])
+	}
+	thread, _ := database.GetThread(board.ThreadIDs[0])
+
+	if len(thread.CommentIDs) == 0 {
+		database.AddComment(thread.ID, user.Username, "Welcome!", "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
+		database.AddComment(thread.ID, user.Username, "Welcome Part 2", "This is the second comment in our default development DefaultClassroomSetup()")
+	}
+
+	os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
+	os.Setenv("dev_class_id", classroom.ID)
+	fmt.Println("BORKED: ", os.Getenv("dev_url"), os.Getenv("dev_class_id"))
+}
+
 func BaseRouter() *gin.Engine {
 	router := gin.Default()
-
+	DefaultClassroomSetup()
 	// Loading our templates and CSS stylesheets
 	router.LoadHTMLGlob("/root/public/templates/*")
 	router.Static("/public/styles", "./public/styles")
+	router.Static("/public/assets", "./public/assets")
+	router.StaticFile("/public/functions.js", "./public/functions.js")
 
 	// Middleware that will be used by ALL routes
 	router.Use(middleware.DefaultMiddleware())
@@ -24,10 +61,14 @@ func BaseRouter() *gin.Engine {
 	public := router.Group("/")
 	{
 		public.GET("/", controllers.Index)
+		public.GET("/tmp", controllers.DevIndex)
+
 		public.GET("/register", controllers.GET_UserRegistration)
 		public.POST("/register", controllers.POST_UserRegistration)
 		public.GET("/login", controllers.GET_UserLogin)
 		public.POST("/login", controllers.POST_UserLogin)
+		public.POST("/logout", middleware.UserAuthenticationMiddleware(), controllers.POST_UserLogout)
+		public.GET("/classrooms/discussions", middleware.UserAuthenticationMiddleware(), func(c *gin.Context) { c.Redirect(http.StatusMovedPermanently, os.Getenv("dev_url")) })
 	}
 
 	// Authenticated user-data routes
@@ -71,9 +112,9 @@ func BaseRouter() *gin.Engine {
 						// '.../classrooms/ID/discussions/ID/threads/ID
 						thread := threads.Group("/:thread_id", authorization.ThreadVerificationMiddleware())
 						{
-							thread.GET("/")
-							threads.POST("/comment")
-							threads.POST("/like")
+							thread.GET("/", controllers.GET_Thread)
+							thread.POST("/comment", controllers.POST_Comment)
+							thread.POST("/like", controllers.POST_CommentLike)
 						}
 					}
 				}
@@ -106,7 +147,7 @@ func BaseRouter() *gin.Engine {
 				}
 				t = append(t, r)
 			}
-			c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			c.HTML(http.StatusOK, "dev_index.tmpl", gin.H{
 				"routes": t,
 			})
 		})

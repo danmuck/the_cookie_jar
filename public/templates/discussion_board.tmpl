@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/public/assets/logo.jpg">
+    <link rel="stylesheet" href="/public/styles/discussion-board.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="/public/functions.js"></script> -->
+    <title>The Cookie Jar Discussion Board</title>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class='navbar'>
+            <img src="/public/assets/logo.jpg" alt='Cookie Jar LMS Logo' id='logo'></img>
+            <a href='/' class='navchild'>Home</a>
+            <a href='/classrooms' class='navchild'>Courses</a>
+            <a href='/assignments' class='navchild'>Assignments</a>
+            <a href='/classrooms/discussions' class='navchild'>Discussion Board</a>
+            <a href='/profile' class='navchild'>Profile</a>
+            <a href='/support' class='navchild'>Support</a>
+            <!-- <a href="/logout" id="logout">Logout</a> -->
+            <form action="/logout" method="post">
+                <button type="submit" id="logout">
+                    Logout
+                </button>
+            </form>
+            {{ if .username }}
+                <h4 style="color: aqua;"> Logged in as: {{ .username }}</h4>
+            {{ end }}
+        </nav>
+        <div class="discussion-wrapper">
+            <div class="discussion-post">   
+                <div class="post-title">
+                    <h2>{{ .current_thread.Name }}</h2>
+                </div>
+                <div>
+                    <form action="comment" method="post" enctype="application/x-www-form-urlencoded">
+                        <input type="text" name="title" placeholder="Title" required /> 
+                        <input type="text" name="text" placeholder="Comment" required /> 
+
+                        <button type="submit">Post</button>
+                    </form>
+                </div>
+                <div class="post-content">
+                    <ul>
+                        {{ range.all_comments }}
+                        <li>
+                            <div class="post-body">
+                                <h3>{{ .Title }} - {{ .Username }}</h3>
+                                <p style="margin: 0 .05rem;"> {{ .Text }}</p>
+                                <br>
+                                {{ if gt (len .LikedUsers) 0 }}
+                                    <h5>Liked by: </h5>
+                                {{ end }}
+                                <ul>
+                                    {{ range.LikedUsers }}
+                                        <li>{{ . }}</li>
+                                    {{ end }}
+                                </ul>
+                                <div class="post-controls">
+                                    <!-- <button>Dislike</button> -->
+                                    <!-- <button>Comment</button> -->
+                                    <form action="like" method="post" enctype="application/x-www-form-urlencoded">
+                                        <input type="hidden" name="comment_id" value="{{ .ID }}" /> 
+                                        <button type="submit">Like</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <br>
+                        </li>
+                        {{ end }}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- <aside class="discussion-controls">
+            <a href="/create-thread" id="c-thread">Create Thread</a>
+        </aside> -->
+    </div>
+</body>
+</html>

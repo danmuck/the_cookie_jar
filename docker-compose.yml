@@ -3,15 +3,17 @@ services:
     container_name: "cookie_lms"
     build: .
     ports:
-      - '8080:8080'
+      - "8080:8080"
     environment:
       WAIT_HOSTS: database:27017
       GOCACHE: /.go-build/
+      MONGODB_URI: ${MONGODB_URI:-mongodb://database:27017/}
+      DB_NAME: ${DB_NAME:-the_cookie_jar}
+      JWT_AUTH_TOKEN_SECRET: ${JWT_AUTH_TOKEN_SECRET:-amsor893u7a2555d01392489186nr03osldkrb4c940d0ad7f4e2b44b95f5a96b}
 
   database:
     container_name: "database_m"
     image: mongo
-    attach:
-      false
+    attach: false
     ports:
-      - '27017:27017'
+      - "27017:27017"

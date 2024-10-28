@@ -1,0 +1,41 @@
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/public/styles/public.css" />
+  </head>
+  <h1>the_cookie_jar</h1>
+
+  <h2>
+    {{ .title }}
+  </h2>
+  <hr />
+  <h3>
+    {{ .sub_title }}
+  </h3>
+  <b style="color: rgb(208, 76, 10)">
+    {{ .body }}
+  </b>
+  {{ if .register_button }}
+  <button type="button">
+    <a href="/register"> Register </a>
+  </button>
+  {{
+    end
+  }}
+
+  <ul>
+    {{
+      range.routes
+    }}
+    <li>
+      <a
+        href="{{ .Path }}"
+        method="{{ .Method }}"
+        style="color: white; text-decoration: none; font-family: monospace"
+        >{{ .Method }} {{ .Path }}</a
+      >
+    </li>
+    {{
+      end
+    }}
+  </ul>
+</html>
