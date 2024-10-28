@@ -46,15 +46,14 @@ func DefaultClassroomSetup() {
 
 func BaseRouter() *gin.Engine {
 	router := gin.Default()
+	// Middleware that will be used by ALL routes
+	router.Use(middleware.DefaultMiddleware())
 	DefaultClassroomSetup()
 	// Loading our templates and CSS stylesheets
 	router.LoadHTMLGlob("/root/public/templates/*")
 	router.Static("/public/styles", "./public/styles")
 	router.Static("/public/assets", "./public/assets")
 	router.StaticFile("/public/functions.js", "./public/functions.js")
-
-	// Middleware that will be used by ALL routes
-	router.Use(middleware.DefaultMiddleware())
 
 	// Non-authenticated public routes
 	public := router.Group("/")
