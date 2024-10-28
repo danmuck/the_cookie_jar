@@ -17,9 +17,10 @@ type Thread struct {
 }
 
 type Comment struct {
-	ID           string    `bson:"_id" json:"id"`
-	Username     string    `bson:"username" json:"username"`
-	Text         string    `bson:"text" json:"text"`
-	LikedUserIDs []string  `bson:"likes" json:"likes"`
-	Date         time.Time `bson:"date" json:"date"`
+	ID         string    `bson:"_id" json:"id"`
+	Username   string    `bson:"username" json:"username"`
+	Title      string    `bson:"title" json:"title"`
+	Text       string    `bson:"text" json:"text"`
+	LikedUsers []string  `bson:"likes" json:"likes"`
+	Date       time.Time `bson:"date" json:"date"`
 }

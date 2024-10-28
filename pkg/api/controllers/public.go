@@ -59,11 +59,6 @@ func Index(c *gin.Context) {
 
 func GET_UserRegistration(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, "/")
-	// err := c.Query("error")
-
-	// c.HTML(http.StatusOK, "register.tmpl", gin.H{
-	// 	"error": err,
-	// })
 }
 
 func POST_UserRegistration(c *gin.Context) {
@@ -118,13 +113,6 @@ func POST_UserRegistration(c *gin.Context) {
 func GET_UserLogin(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, "/")
 
-	// err := c.Query("error")
-
-	// c.HTML(http.StatusOK, "login.tmpl", gin.H{
-	// 	"title":     "Welcome!",
-	// 	"sub_title": "Login please!",
-	// 	"error":     err,
-	// })
 }
 
 func POST_UserLogin(c *gin.Context) {

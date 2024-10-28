@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// "/classrooms/77a43ace-c76f-48bc-9778-9bc91a6a8709/discussions/7c023439-4240-4342-8782-774a68073831/threads/d6323b64-6357-41da-a8da-e4d438f9c36a/"
+
 func DiscussionIndex(c *gin.Context) {
 	classroomID := c.Param("classroom_id")
 	c.HTML(http.StatusOK, "discussion_board.tmpl", gin.H{
@@ -96,9 +98,10 @@ func POST_Comment(c *gin.Context) {
 	classroomID := c.Param("classroom_id")
 	boardID := c.Param("board_id")
 	threadID := c.Param("thread_id")
+	title := c.PostForm("title")
 	text := c.PostForm("text")
 
-	database.AddComment(threadID, user.Username, text)
+	database.AddComment(threadID, user.Username, text, title)
 	e := fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroomID, boardID, threadID)
 	c.Redirect(http.StatusSeeOther, e)
 }
@@ -117,10 +120,10 @@ func POST_CommentLike(c *gin.Context) {
 		})
 	}
 
-	if utils.Contains(comment.LikedUserIDs, user.ID) {
-		comment.LikedUserIDs = utils.RemoveItem(comment.LikedUserIDs, user.ID)
+	if utils.Contains(comment.LikedUsers, user.ID) {
+		comment.LikedUsers = utils.RemoveItem(comment.LikedUsers, user.Username)
 	} else {
-		comment.LikedUserIDs = append(comment.LikedUserIDs, user.ID)
+		comment.LikedUsers = append(comment.LikedUsers, user.Username)
 	}
 	_ = database.UpdateComment(comment)
 

@@ -12,7 +12,7 @@ import (
 /*
 Adds a comment to the database.
 */
-func AddComment(threadID string, username string, text string) error {
+func AddComment(threadID string, username string, title string, text string) error {
 	// Grab thread to add comment to, also making sure thread exists
 	thread, err := GetThread(threadID)
 	if err != nil {
@@ -27,11 +27,12 @@ func AddComment(threadID string, username string, text string) error {
 
 	// Creating the new comment
 	comment := &models.Comment{
-		ID:           uuid.New().String(),
-		Username:     user.Username,
-		Text:         text,
-		LikedUserIDs: make([]string, 0),
-		Date:         time.Now(),
+		ID:         uuid.New().String(),
+		Username:   user.Username,
+		Title:      title,
+		Text:       text,
+		LikedUsers: make([]string, 0),
+		Date:       time.Now(),
 	}
 
 	// Trying to add comment to database
@@ -48,8 +49,6 @@ func AddComment(threadID string, username string, text string) error {
 		return err
 	}
 
-	
-
 	return nil
 }
 
@@ -58,37 +57,38 @@ Will create stats for a user if they don't exist.
 */
 func CreateUserStats(username string) error {
 	stats := &models.UserCommentStats{
-		ID:				uuid.New().String(),
-		Username:		username,
-		TotalComments:	0,
-		TotalLikes:		0,
+		ID:            uuid.New().String(),
+		Username:      username,
+		TotalComments: 0,
+		TotalLikes:    0,
 	}
 	_, err := GetCollection("user_stats").InsertOne(context.TODO(), stats)
 	return err
 }
 
 /*
-This will retireve the stats for a given 
+This will retireve the stats for a given
 */
 func GetUserStats(username string) (*models.UserCommentStats, error) {
-    var stats models.UserCommentStats
-    err := GetCollection("user_stats").FindOne(context.TODO(), gin.H{"username": username},).Decode(&stats)
-    return &stats, err
+	var stats models.UserCommentStats
+	err := GetCollection("user_stats").FindOne(context.TODO(), gin.H{"username": username}).Decode(&stats)
+	return &stats, err
 }
+
 /*
 Will update the user stats for an associated user.
 */
 
 func UpdateUserStats(username string) error {
-    _, err := GetCollection("user_stats").UpdateOne(
-        context.TODO(),
-        gin.H{"username": username},
-        gin.H{
-            "$inc": gin.H{"total_comments": 1},
-        },
-    )
-    return err
-	
+	_, err := GetCollection("user_stats").UpdateOne(
+		context.TODO(),
+		gin.H{"username": username},
+		gin.H{
+			"$inc": gin.H{"total_comments": 1},
+		},
+	)
+	return err
+
 }
 
 /*

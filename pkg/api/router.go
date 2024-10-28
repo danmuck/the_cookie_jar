@@ -36,13 +36,13 @@ func DefaultClassroomSetup() {
 	thread, _ := database.GetThread(board.ThreadIDs[0])
 
 	if len(thread.CommentIDs) == 0 {
-		database.AddComment(thread.ID, user.Username, "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
-
-		database.AddComment(thread.ID, user.Username, "This is the second comment in our default development DefaultClassroomSetup()")
+		database.AddComment(thread.ID, user.Username, "Welcome!", "Welcome to this thread. This is a default thread created for grading purposes. Feel free to comment and like! Refresh the page to see new comments.")
+		database.AddComment(thread.ID, user.Username, "Welcome Part 2", "This is the second comment in our default development DefaultClassroomSetup()")
 	}
 
-	os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
-	os.Setenv("dev_class_id", classroom.ID)
+	a := os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
+	b := os.Setenv("dev_class_id", classroom.ID)
+	fmt.Println("BORKED: ", a, b)
 }
 
 func BaseRouter() *gin.Engine {
