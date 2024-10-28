@@ -35,6 +35,13 @@ func AddClassroom(username string, name string) error {
 		return err
 	}
 
+	// Associating user with the classroom directly
+	user.ClassroomIDs = append(user.ClassroomIDs, classroom.ID)
+	err = UpdateUser(user)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

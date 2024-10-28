@@ -24,11 +24,17 @@ func AddThread(boardID string, name string) error {
 		Name:       name,
 		CommentIDs: make([]string, 0),
 	}
-	board.ThreadIDs = append(board.ThreadIDs, thread.ID)
 
 	// Trying to add thread to database
 	threadCollection := GetCollection("threads")
 	_, err = threadCollection.InsertOne(context.TODO(), thread)
+	if err != nil {
+		return err
+	}
+
+	// Associating board with the thread directly
+	board.ThreadIDs = append(board.ThreadIDs, thread.ID)
+	err = UpdateBoard(board)
 	if err != nil {
 		return err
 	}

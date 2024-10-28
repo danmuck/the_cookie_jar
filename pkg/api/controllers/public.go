@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
@@ -52,15 +53,12 @@ func Index(c *gin.Context) {
 		"sub_title":       "Learning Management System",
 		"body":            "TODO",
 		"register_button": "true",
+		"username":        c.GetString("username"),
 	})
 }
 
 func GET_UserRegistration(c *gin.Context) {
-	err := c.Query("error")
-
-	c.HTML(http.StatusOK, "register.tmpl", gin.H{
-		"error": err,
-	})
+	c.Redirect(http.StatusTemporaryRedirect, "/")
 }
 
 func POST_UserRegistration(c *gin.Context) {
@@ -81,17 +79,40 @@ func POST_UserRegistration(c *gin.Context) {
 		return
 	}
 
+	user, err := database.GetUser(username)
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+	user.ClassroomIDs = append(user.ClassroomIDs, os.Getenv("dev_class_id"))
+	err = database.UpdateUser(user)
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+
+	classroom, err := database.GetClassroom(os.Getenv("dev_class_id"))
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+	classroom.StudentIDs = append(classroom.StudentIDs, user.ID)
+	err = database.UpdateClassroom(classroom)
+	if err != nil {
+		e := fmt.Sprintf("/register?error=%v", err)
+		c.Redirect(http.StatusFound, e)
+		return
+	}
+
 	c.Redirect(http.StatusFound, "/?new_user=true")
 }
 
 func GET_UserLogin(c *gin.Context) {
-	err := c.Query("error")
+	c.Redirect(http.StatusTemporaryRedirect, "/")
 
-	c.HTML(http.StatusOK, "login.tmpl", gin.H{
-		"title":     "Welcome!",
-		"sub_title": "Login please!",
-		"error":     err,
-	})
 }
 
 func POST_UserLogin(c *gin.Context) {
@@ -111,6 +132,30 @@ func POST_UserLogin(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("jwt_token", token, int(time.Hour.Seconds()), "/", "localhost", false, true)
-	c.Redirect(http.StatusFound, "/")
+	c.SetCookie("jwt_token", token, int(time.Hour.Seconds()), "/", "/", false, true)
+	c.Redirect(http.StatusSeeOther, "/")
+}
+
+func POST_UserLogout(c *gin.Context) {
+	user, err := database.GetUser(c.GetString("username"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  err.Error(),
+			"result": user,
+		})
+		return
+	}
+
+	user.Auth.AuthTokenHash = ""
+	err = database.UpdateUser(user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  err.Error(),
+			"result": user,
+		})
+		return
+	}
+
+	c.SetCookie("jwt_token", "", 1, "/", "/", false, true)
+	c.Redirect(http.StatusSeeOther, "/")
 }

@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/models"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -29,9 +29,10 @@ func AddUser(username string, password string) error {
 
 	// Creating the new user
 	user := &models.User{
-		ID:       uuid.New().String(),
-		Username: username,
-		Auth:     models.Credentials{PasswordHash: string(hashedPassword), AuthTokenHash: ""},
+		ID:           uuid.New().String(),
+		Username:     username,
+		ClassroomIDs: make([]string, 0),
+		Auth:         models.Credentials{PasswordHash: string(hashedPassword), AuthTokenHash: ""},
 	}
 
 	// Trying to add user to the database assuming they don't already exist
