@@ -45,6 +45,7 @@ func GET_Thread(c *gin.Context) {
 		"classroom_id":   classroomID,
 		"current_thread": thread,
 		"all_comments":   all_comments,
+		"username":       c.GetString("username"),
 	})
 }
 

@@ -15,7 +15,7 @@
             <a href='/' class='navchild'>Home</a>
             <a href='/classrooms' class='navchild'>Courses</a>
             <a href='/assignments' class='navchild'>Assignments</a>
-            <a href='/classrooms/{{ .classroom_id }}/discussions' class='navchild'>Discussion Board</a>
+            <a href='/classrooms/discussions' class='navchild'>Discussion Board</a>
             <a href='/profile' class='navchild'>Profile</a>
             <a href='/support' class='navchild'>Support</a>
             <!-- <a href="/logout" id="logout">Logout</a> -->
@@ -24,6 +24,9 @@
                     Logout
                 </button>
             </form>
+            {{ if .username }}
+                <h4 style="color: aqua;"> Logged in as: {{ .username }}</h4>
+            {{ end }}
         </nav>
         <div class="account_management">
             <div class="register">

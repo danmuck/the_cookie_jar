@@ -147,7 +147,7 @@ func BaseRouter() *gin.Engine {
 				}
 				t = append(t, r)
 			}
-			c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			c.HTML(http.StatusOK, "dev_index.tmpl", gin.H{
 				"routes": t,
 			})
 		})

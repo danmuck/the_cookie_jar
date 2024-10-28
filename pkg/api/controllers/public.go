@@ -53,15 +53,17 @@ func Index(c *gin.Context) {
 		"sub_title":       "Learning Management System",
 		"body":            "TODO",
 		"register_button": "true",
+		"username":        c.GetString("username"),
 	})
 }
 
 func GET_UserRegistration(c *gin.Context) {
-	err := c.Query("error")
+	c.Redirect(http.StatusTemporaryRedirect, "/")
+	// err := c.Query("error")
 
-	c.HTML(http.StatusOK, "register.tmpl", gin.H{
-		"error": err,
-	})
+	// c.HTML(http.StatusOK, "register.tmpl", gin.H{
+	// 	"error": err,
+	// })
 }
 
 func POST_UserRegistration(c *gin.Context) {
@@ -114,13 +116,15 @@ func POST_UserRegistration(c *gin.Context) {
 }
 
 func GET_UserLogin(c *gin.Context) {
-	err := c.Query("error")
+	c.Redirect(http.StatusTemporaryRedirect, "/")
 
-	c.HTML(http.StatusOK, "login.tmpl", gin.H{
-		"title":     "Welcome!",
-		"sub_title": "Login please!",
-		"error":     err,
-	})
+	// err := c.Query("error")
+
+	// c.HTML(http.StatusOK, "login.tmpl", gin.H{
+	// 	"title":     "Welcome!",
+	// 	"sub_title": "Login please!",
+	// 	"error":     err,
+	// })
 }
 
 func POST_UserLogin(c *gin.Context) {
