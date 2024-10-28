@@ -12,9 +12,11 @@ type Credentials struct {
 	AuthTokenHash string `bson:"hashed_token" json:"hashed_token"`
 }
 
-type UserStats struct{
-	TotalComments	int `bson:"_total" json: "total"`
-	TotalLikes		int	`bson:"_likes" json: "likes"`
+type UserCommentStats struct {
+    ID            string    `bson:"_id" json:"id"`
+    Username      string    `bson:"username" json:"username"`
+    TotalComments int       `bson:"total_comments" json:"total_comments"`
+    TotalLikes    int       `bson:"total_likes" json:"total_likes"`
 }
 
 func (u *User) GetId() string {

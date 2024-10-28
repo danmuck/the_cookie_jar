@@ -48,7 +48,48 @@ func AddComment(threadID string, username string, text string) error {
 		return err
 	}
 
+	
+
 	return nil
+}
+
+/*
+Will create stats for a user if they don't exist.
+*/
+func CreateUserStats(username string) error {
+	stats := &UserCommentStats{
+		ID:				uuid.New().String(),
+		Username:		username,
+		TotalComments:	0,
+		TotalLikes:		0,
+	}
+	_, err := GetCollection("user_stats").InsertOne(context.TODO(), stats)
+	return err
+}
+
+/*
+This will retireve the stats for a given 
+*/
+func GetUserStats(username string) (*UserCommentStats, error) {
+	var stats *UserCommentStats
+	err := GetCollection("user_stats").FindOne(context.TODO(), gin.H{"username": username},).Decode(&stats)
+	return stats, err
+}
+
+/*
+Will update the user stats for an associated user.
+*/
+
+func UpdateUserStats(username string) error {
+    _, err := GetCollection("user_stats").UpdateOne(
+        context.TODO(),
+        gin.H{"username": username},
+        gin.H{
+            "$inc": gin.H{"total_comments": 1},
+        },
+    )
+    return nil
+	
 }
 
 /*
