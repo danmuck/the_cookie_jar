@@ -125,6 +125,16 @@ func POST_UserLogout(c *gin.Context) {
 		return
 	}
 
+	user.Auth.AuthTokenHash = ""
+	err = database.UpdateUser(user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":  err.Error(),
+			"result": user,
+		})
+		return
+	}
+
 	c.SetCookie("jwt_token", "deleted", 0, "/", "localhost", false, true)
 	c.Redirect(http.StatusFound, "/")
 }
