@@ -40,9 +40,9 @@ func DefaultClassroomSetup() {
 		database.AddComment(thread.ID, user.Username, "Welcome Part 2", "This is the second comment in our default development DefaultClassroomSetup()")
 	}
 
-	a := os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
-	b := os.Setenv("dev_class_id", classroom.ID)
-	fmt.Println("BORKED: ", a, b)
+	os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
+	os.Setenv("dev_class_id", classroom.ID)
+	fmt.Println("BORKED: ", os.Getenv("dev_url"), os.Getenv("dev_class_id"))
 }
 
 func BaseRouter() *gin.Engine {

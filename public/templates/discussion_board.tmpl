@@ -46,18 +46,23 @@
                         {{ range.all_comments }}
                         <li>
                             <div class="post-body">
-                                <h3>{{ .Username }}</h3>
+                                <h3>{{ .Title }} - {{ .Username }}</h3>
                                 <p style="margin: 0 .05rem;"> {{ .Text }}</p>
-                                <h5>liked by: </h5>
-                                {{ range.LikedUsers }}
-                                    <p>    {{ . }}</p>
+                                <br>
+                                {{ if gt (len .LikedUsers) 0 }}
+                                    <h5>Liked by: </h5>
                                 {{ end }}
+                                <ul>
+                                    {{ range.LikedUsers }}
+                                        <li>{{ . }}</li>
+                                    {{ end }}
+                                </ul>
                                 <div class="post-controls">
                                     <!-- <button>Dislike</button> -->
                                     <!-- <button>Comment</button> -->
                                     <form action="like" method="post" enctype="application/x-www-form-urlencoded">
                                         <input type="hidden" name="comment_id" value="{{ .ID }}" /> 
-                                        <button type="submit">Likes: {{ len .LikedUsers }}</button>
+                                        <button type="submit">Like</button>
                                     </form>
                                 </div>
                             </div>

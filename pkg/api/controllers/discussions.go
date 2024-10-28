@@ -101,7 +101,7 @@ func POST_Comment(c *gin.Context) {
 	title := c.PostForm("title")
 	text := c.PostForm("text")
 
-	database.AddComment(threadID, user.Username, text, title)
+	database.AddComment(threadID, user.Username, title, text)
 	e := fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroomID, boardID, threadID)
 	c.Redirect(http.StatusSeeOther, e)
 }
@@ -120,7 +120,7 @@ func POST_CommentLike(c *gin.Context) {
 		})
 	}
 
-	if utils.Contains(comment.LikedUsers, user.ID) {
+	if utils.Contains(comment.LikedUsers, user.Username) {
 		comment.LikedUsers = utils.RemoveItem(comment.LikedUsers, user.Username)
 	} else {
 		comment.LikedUsers = append(comment.LikedUsers, user.Username)
