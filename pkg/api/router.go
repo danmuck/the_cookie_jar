@@ -42,20 +42,18 @@ func DefaultClassroomSetup() {
 
 	os.Setenv("dev_url", fmt.Sprintf("/classrooms/%v/discussions/%v/threads/%v", classroom.ID, board.ID, thread.ID))
 	os.Setenv("dev_class_id", classroom.ID)
-	fmt.Println("BORKED: ", os.Getenv("dev_url"), os.Getenv("dev_class_id"))
 }
 
 func BaseRouter() *gin.Engine {
 	router := gin.Default()
+	// Middleware that will be used by ALL routes
+	router.Use(middleware.DefaultMiddleware())
 	DefaultClassroomSetup()
 	// Loading our templates and CSS stylesheets
 	router.LoadHTMLGlob("/root/public/templates/*")
 	router.Static("/public/styles", "./public/styles")
 	router.Static("/public/assets", "./public/assets")
 	router.StaticFile("/public/functions.js", "./public/functions.js")
-
-	// Middleware that will be used by ALL routes
-	router.Use(middleware.DefaultMiddleware())
 
 	// Non-authenticated public routes
 	public := router.Group("/")

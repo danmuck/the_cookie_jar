@@ -123,6 +123,7 @@ func POST_UserLogin(c *gin.Context) {
 	err := database.VerifyPassword(username, password)
 	if err != nil {
 		c.Redirect(http.StatusFound, "/login?error=bad_password")
+		return
 	}
 
 	token, err := database.GenerateAuthToken(username)
