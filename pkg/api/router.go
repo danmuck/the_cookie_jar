@@ -54,7 +54,9 @@ func BaseRouter() *gin.Engine {
 	router.Static("/public/styles", "./public/styles")
 	router.Static("/public/assets", "./public/assets")
 	router.StaticFile("/public/functions.js", "./public/functions.js")
-
+	router.POST("/media", controllers.UploadMedia)
+	router.GET("/media/:id", controllers.GetMedia)
+	router.DELETE("/media/:id", controllers.DeleteMedia)
 	// Non-authenticated public routes
 	public := router.Group("/")
 	{
