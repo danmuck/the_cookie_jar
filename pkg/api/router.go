@@ -51,6 +51,12 @@ func BaseRouter() *gin.Engine {
 				commentRoutes.GET("/ws", controllers.GET_CommentsWebSocket)
 			}
 		}
+
+		gameRoutes := classroomRoutes.Group("/class-game")
+		{
+			gameRoutes.GET("/", controllers.GET_Game)
+			gameRoutes.GET("/ws", controllers.GET_GameWebSocket)
+		}
 	}
 
 	router.NoRoute(func(c *gin.Context) {
