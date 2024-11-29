@@ -71,11 +71,3 @@ func POST_UserLogout(c *gin.Context) {
 	c.SetCookie("jwt_token", "", 1, "/", "/", false, true)
 	c.Redirect(http.StatusSeeOther, "/")
 }
-
-func GET_Account(c *gin.Context) {
-	c.HTML(http.StatusOK, "account.html", gin.H{
-		"IsLoggedIn":         true,
-		"Username":           c.GetString("username"),
-		"ImageUploadMessage": c.Query("imageUploadMessage"),
-	})
-}

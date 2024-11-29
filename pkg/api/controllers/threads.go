@@ -116,7 +116,7 @@ func GET_ThreadsWebSocket(c *gin.Context) {
 
 				message["ID"] = thread.ID
 				message["Date"] = thread.Date
-				message["AuthorImageURL"] = "https://ih1.redbubble.net/image.1893273316.6237/tst,small,845x845-pad,1000x1000,f8f8f8.jpg"
+				message["AuthorImageURL"] = "/" + database.GetUserPFPPath(thread.AuthorID)
 				message["AuthorID"] = thread.AuthorID
 				message["OpenSockets"] = len(openThreadsSockets)
 

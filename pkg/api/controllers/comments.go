@@ -118,7 +118,7 @@ func GET_CommentsWebSocket(c *gin.Context) {
 				message["Text"] = html.EscapeString(message["Text"].(string))
 
 				message["ID"] = comment.ID
-				message["AuthorImageURL"] = "https://ih1.redbubble.net/image.1893273316.6237/tst,small,845x845-pad,1000x1000,f8f8f8.jpg"
+				message["AuthorImageURL"] = "/" + database.GetUserPFPPath(comment.AuthorID)
 				message["AuthorID"] = comment.AuthorID
 				message["OpenSockets"] = len(openCommentsSockets)
 

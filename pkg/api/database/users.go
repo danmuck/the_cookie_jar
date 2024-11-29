@@ -29,9 +29,10 @@ func AddUser(username string, password string) error {
 
 	// Creating the new user
 	user := &models.User{
-		Username:     username,
-		ClassroomIDs: make([]string, 0),
-		Auth:         models.Credentials{PasswordHash: string(hashedPassword), AuthTokenHash: ""},
+		Username:         username,
+		ClassroomIDs:     make([]string, 0),
+		Auth:             models.Credentials{PasswordHash: string(hashedPassword), AuthTokenHash: ""},
+		ProfilePictureID: "default",
 	}
 
 	// Trying to add user to the database assuming they don't already exist
@@ -55,6 +56,35 @@ func GetUser(username string) (*models.User, error) {
 	var user *models.User
 	err := GetCollection("users").FindOne(context.TODO(), gin.H{"Username": username}).Decode(&user)
 	return user, err
+}
+
+/*
+Gets path of user's PFP
+*/
+func GetUserPFPPath(username string) string {
+	// Grabbing user model while also verifying they exist
+	user, err := GetUser(username)
+	if err != nil {
+		return "bad"
+	}
+
+	return GetMediaPath(user.ProfilePictureID)
+}
+
+/*
+Will search for the user in the database based on given username then
+update their media ID reference (pfpID)
+*/
+func UpdateUserPicture(username string, mediaId string) error {
+	// Grabbing user model while also verifying they exist
+	user, err := GetUser(username)
+	if err != nil {
+		return err
+	}
+
+	user.ProfilePictureID = mediaId
+	err = GetCollection("users").FindOneAndReplace(context.TODO(), gin.H{"Username": user.Username}, user).Err()
+	return err
 }
 
 /*
@@ -96,6 +126,36 @@ func UpdateUserAuthToken(username string, authTokenHash string) error {
 	user.Auth.AuthTokenHash = authTokenHash
 	err = GetCollection("users").FindOneAndReplace(context.TODO(), gin.H{"Username": user.Username}, user).Err()
 	return err
+}
+
+/*
+Deletes a users PFP from the disk and media database.
+*/
+func DeleteUserPFPFromDisk(username string) error {
+	// Grabbing user from database
+	user, err := GetUser(username)
+	if err != nil {
+		return err
+	}
+
+	return RemoveMediaFromDisk(user.ProfilePictureID)
+}
+
+/*
+Returns nil if user has no PFP ID associated with them.
+*/
+func UserHasNoPFP(username string) error {
+	// Grabbing user from database
+	user, err := GetUser(username)
+	if err != nil {
+		return err
+	}
+
+	if user.ProfilePictureID != "default" {
+		return fmt.Errorf("user has pfp")
+	}
+
+	return nil
 }
 
 /*

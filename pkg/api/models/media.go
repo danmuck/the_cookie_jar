@@ -1,7 +1,7 @@
 package models
 
 type Media struct {
-	ID               string `bson:"_id" json:"id"`
-	UploaderUsername string `bson:"username" json:"username"`
-	Format           string `bson:"format" json:"format"`
+	ID       string `bson:"_id" json:"id"`
+	Path     string `json:"Path" bson:"Path"`
+	AuthorID string `json:"AuthorID" bson:"AuthorID"`
 }
