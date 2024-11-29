@@ -23,6 +23,7 @@ func BaseRouter() *gin.Engine {
 	router.POST("/login", controllers.POST_UserLogin)
 	router.POST("/logout", controllers.POST_UserLogout)
 
+	router.GET("/account", middleware.UserAuthenticationMiddleware(), controllers.GET_Account)
 	router.POST("/create-classroom", middleware.UserAuthenticationMiddleware(), controllers.POST_CreateClassroom)
 
 	classroomRoutes := router.Group("/:classroom_id", middleware.UserAuthenticationMiddleware(), middleware.ClassroomVerificationMiddleware())
