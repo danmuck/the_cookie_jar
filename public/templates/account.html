@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{ template "base_head" . }}
+        <link rel="stylesheet" href="/public/styles/account.css">
+        <script src="/public/scripts/account.js"></script>
+    </head>
+
+    <header>
+        {{ template "base_header" . }}
+    </header>
+
+    <body>
+        <div class="profile-picture-form">
+            <h3>Profile Picture</h3>
+            <div class="upload-form">
+                <img class="uploaded-image" src="https://picsum.photos/300/200" width=100px height=100px>
+                <button class="upload-btn">Browse & Upload</button>
+            </div>
+            {{ if gt (len .ImageUploadMessage) 0 }}
+            <h5 style="color: rgb(240, 94, 94)">{{ .ImageUploadMessage }}</h5>
+            {{ end }}
+        </div>
+    </body>
+</html>
