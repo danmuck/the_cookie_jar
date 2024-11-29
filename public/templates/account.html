@@ -14,8 +14,8 @@
         <div class="profile-picture-form">
             <h3>Profile Picture</h3>
             <div class="upload-form">
-                <img class="uploaded-image" src="https://picsum.photos/300/200" width=100px height=100px>
-                <button class="upload-btn">Browse & Upload</button>
+                <img class="uploaded-image" id="upload-image" src="https://picsum.photos/300/200" width=100px height=100px>
+                <button class="upload-btn" id="upload-btn">Browse & Upload</button>
             </div>
             {{ if gt (len .ImageUploadMessage) 0 }}
             <h5 style="color: rgb(240, 94, 94)">{{ .ImageUploadMessage }}</h5>
