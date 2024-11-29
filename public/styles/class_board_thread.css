@@ -1,0 +1,93 @@
+.title {
+    display: flex;
+    margin-bottom: 6px;
+}
+.title .back-arrow {
+    margin-left: 16px;
+    margin-right: 20px;
+    margin-bottom: inherit;
+    font-weight: bolder;
+}
+.title .back-arrow:hover {
+    color: palegoldenrod;
+    cursor: pointer;
+}
+.title .text {
+    margin-bottom: inherit;
+}
+
+.comments .comment-list {
+    margin-top: 0;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    padding: 0px;
+    list-style: none;
+}
+
+.comments .comment-list .comment {
+    margin-top: 14px;
+    padding: 12px;
+    background-color: rgb(189, 180, 170);
+
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 4px;
+}
+.comments .comment-list .comment .body {
+    display: flex;
+    flex-direction: row;
+}
+.comments .comment-list .comment .body .text {
+    margin-right: 20px;
+    margin-bottom: 10px;
+    white-space: pre;
+}
+.comments .comment-list .comment .body .poster {
+    margin-left: auto;
+    margin-right: 10px;
+    margin-top: 16px;
+}
+.comments .comment-list .comment .body .poster .name {
+    margin: 0px;
+    margin-bottom: 10px;
+}
+.comments .comment-list .comment .actions {
+    display: flex;
+    flex-direction: row;
+    margin: 0px;
+}
+.comments .comment-list .comment .actions h6 {
+    margin: inherit;
+    color: rgb(61, 61, 190);
+    margin-right: 8px;
+}
+.comments .comment-list .comment .actions h6:hover {
+    color: palegoldenrod;
+    cursor: pointer;
+}
+
+.comment-area {
+    margin-left: 8px;
+    margin-right: 16px;
+    margin-top: 16px;
+}
+.comment-area .comment-box {
+    margin-bottom: 6px;
+    width: 100%;
+
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 16px;
+}
+.comment-area .comment-btn {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
+}
+.comment-area .comment-btn:hover {
+    color: #4b4b27;
+    cursor: pointer;
+}

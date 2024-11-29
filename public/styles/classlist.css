@@ -1,0 +1,72 @@
+.created-class-list {
+    margin-left: 20px;
+    margin-bottom: 32px;
+}
+.created-class-list h2 {
+    margin-left: 6px;
+    margin-bottom: 16px;
+}
+.joined-class-list {
+    margin-left: 20px;
+}
+.joined-class-list h2 {
+    margin-left: 6px;
+    margin-bottom: 16px;
+}
+
+.class-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+.class-list .class {
+    width: 400px;
+    height: 100px;
+    padding: 8px;
+    background-color: rgb(255, 219, 164);
+    margin-right: 12px;
+    margin-bottom: 12px;
+
+    display: flex;
+    flex-direction: column;
+
+    border: solid;
+    border-width: 3px;
+    border-radius: 6px;
+}
+.class-list .class a {
+    text-decoration: none;
+}
+.class-list .class .title {
+    margin-top: 4px;
+}
+.class-list .class .title:hover {
+    color: rgb(88, 88, 21);
+    cursor: pointer;
+}
+.class-list .class .student-count {
+    margin: 0px;
+    margin-top: auto;
+    margin-bottom: 4px;
+}
+.class-list .class .professor {
+    margin: 0px;
+}
+
+.create-class {
+    background-color:rgb(255, 219, 164);
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 40px;
+
+    border: solid;
+    border-width: 3px;
+    border-radius: 6px;
+}
+.create-class h2 {
+    margin-left: 8px;
+    margin-top: 4px;
+}
+.create-class form {
+    margin-left: 8px;
+    margin-bottom: 8px;
+}

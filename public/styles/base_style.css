@@ -1,0 +1,48 @@
+#header-bar {
+    background-color: black;
+}
+
+#profile-btn {
+    color: white;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-family: 'Arial', sans-serif;
+    user-select: none;
+}
+#profile-btn-text:hover {
+    color: palegoldenrod;
+    cursor: pointer;
+}
+#profile-dropdown {
+    display: none;
+    background-color: #444444  ;
+    color: white;
+    border-color: #d3d3d3;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 8px;
+
+    position: absolute;
+    top: 24px;
+    right: 0px;
+    width: 56px;
+    height: 38px;
+}
+.profile-dropdown-btn {
+    position: relative;
+    top: 4px;
+    left: 4px;
+    padding-bottom: 2px;;
+    font-size: 12px;
+}
+.profile-dropdown-btn:hover {
+    color: palegoldenrod;
+    cursor: pointer;
+}
+
+body {
+    margin: 0px;
+    background-color: hotpink;
+    font-family: 'Arial', sans-serif;
+}

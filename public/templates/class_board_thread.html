@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{ template "base_head" . }}
+        <link rel="stylesheet" href="/public/styles/class_board_thread.css">
+        <script src="/public/scripts/class_board_thread.js"></script>
+    </head>
+
+    <header>
+        {{ template "base_header" . }}
+    </header>
+
+    <body>
+        <div class="title">
+            <h2 class="back-arrow" id="back-arrow">←</h2>
+            <h2 class="text">{{ .ThreadTitle }}</h4>
+        </div>
+        <div class="comments">
+            <ul class="comment-list" id="comment-list">
+                {{ range .CommentList }}
+                <li class="comment">
+                    <div class="body">
+                        <p class="text">{{ .Text }}</p>
+                        <div class="poster">
+                            <img src="https://ih1.redbubble.net/image.1893273316.6237/tst,small,845x845-pad,1000x1000,f8f8f8.jpg" style="width: 60px; height: 60px;">
+                            <h6 class="name">{{ .AuthorID }}</h6>
+                        </div>
+                    </div>
+                    <div class="actions" data-id="{{ .ID }}">
+                        <h6 class="action-btn-like" data-amount="{{ len .LikedUserIDs }}">Like {{ if gt (len .LikedUserIDs) 0 }}({{ len .LikedUserIDs }}){{ end }}</h6>
+                        {{ if or (eq $.Username .AuthorID) $.IsClassProfessor }}
+                        <h6 class="action-btn-edit">Edit</h6>
+                        {{ end }}
+                    </div>
+                </li>
+                {{ end }}
+            </ul>
+        </div>
+        <div class="comment-area">
+            <textarea class="comment-box" id="comment-box" rows="5" cols="40" placeholder="Write your comment here..."></textarea>
+            <br>
+            <button class="comment-btn" id="comment-btn">Comment</button>
+        </div>
+    </body>
+</html>

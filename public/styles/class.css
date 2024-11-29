@@ -1,0 +1,32 @@
+.class-page {
+    border: solid;
+    background-color: #f8a4a4;
+}
+.class-page .explorer {
+    margin-left: 8px;
+    margin-bottom: 22px;
+}
+.class-page .explorer li {
+    margin-bottom: 8px;
+}
+.class-page hr {
+    border: solid;
+    border-width: 2px;
+}
+.class-page .settings {
+    margin-left: 8px;
+    margin-top: 14px;
+    margin-bottom: 12px;
+}
+.class-page .settings hr {
+    border: solid;
+    border-width: 2px;
+}
+.class-page .settings form {
+    margin-bottom: 8px;
+}
+.class-page .settings button {
+    border: solid;
+    border-width: 1px;
+    border-radius: 2px;
+}

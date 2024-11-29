@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{ template "base_head" . }}
+        <link rel="stylesheet" href="/public/styles/class.css">
+    </head>
+
+    <header>
+        {{ template "base_header" . }}
+    </header>
+
+    <body>
+        <div class="class-page">
+            <div class="explorer">
+                <h2>{{ .ClassName }}</h2>
+                <nav>
+                    <ul>
+                        <li><a href="discussion-board">Discussion Board</a></li>
+                        <li><a href="class-game">Class Game</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <hr>
+            <div class="settings">
+                <form action="leave" method="POST">
+                    <button type="submit">Leave Classroom</button>
+                </form>
+                {{ if .IsProfessor }}
+                <form action="add" method="POST">
+                    <input type="text" name="username" required>
+                    <button type="submit">Add Student</button>
+                </form>
+                <form action="remove" method="POST">
+                    <input type="text" name="username" required>
+                    <button type="submit">Remove Student</button>
+                </form>
+                {{ end }}
+                {{ if gt (len .SettingsMessage) 0 }}
+                <h5 style="color: rgb(240, 94, 94)">{{ .SettingsMessage }}</h5>
+                {{ end }}
+            </div>
+        </div>
+    </body>
+</html>
