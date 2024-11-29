@@ -20,7 +20,7 @@ func GET_Comments(c *gin.Context) {
 	// Grabbing thread
 	thread, err := database.GetThread(c.Param("thread_id"))
 	if err != nil {
-		utils.RouteError(c, "there was a problem")
+		utils.RouteError(c, "this content does not exist")
 		return
 	}
 
@@ -45,15 +45,20 @@ func GET_Comments(c *gin.Context) {
 }
 
 // All open WebSockets, also a mutex to prevent race conditions
-var openCommentsSockets = make(map[*websocket.Conn]bool)
+var openCommentsSockets = make(map[*websocket.Conn]string)
 var openCommentsSocketsMutex sync.Mutex
 
-// Broadcasts a message to all open sockets
-func broadcastCommentsSocket(data []byte) {
+// Broadcasts a message to all open sockets of a particular thread ID
+func broadcastCommentsSocket(data []byte, id string) {
 	openCommentsSocketsMutex.Lock()
 	defer openCommentsSocketsMutex.Unlock()
 
 	for socket := range openCommentsSockets {
+		// This open thread isn't the same one we want to broadcast to
+		if openCommentsSockets[socket] != id {
+			continue
+		}
+
 		err := socket.WriteMessage(websocket.TextMessage, data)
 		if err != nil {
 			socket.Close()
@@ -73,7 +78,7 @@ func GET_CommentsWebSocket(c *gin.Context) {
 
 	// Add new WebSocket to open sockets
 	openCommentsSocketsMutex.Lock()
-	openCommentsSockets[socket] = true
+	openCommentsSockets[socket] = c.Param("thread_id")
 	openCommentsSocketsMutex.Unlock()
 	defer func() {
 		openCommentsSocketsMutex.Lock()
@@ -127,7 +132,7 @@ func GET_CommentsWebSocket(c *gin.Context) {
 					break
 				}
 
-				broadcastCommentsSocket(jsonBytes)
+				broadcastCommentsSocket(jsonBytes, openCommentsSockets[socket])
 				break
 
 			case "likeComment":
@@ -146,7 +151,7 @@ func GET_CommentsWebSocket(c *gin.Context) {
 					break
 				}
 
-				broadcastCommentsSocket(jsonBytes)
+				broadcastCommentsSocket(jsonBytes, openCommentsSockets[socket])
 				break
 
 			case "editComment":
@@ -172,7 +177,7 @@ func GET_CommentsWebSocket(c *gin.Context) {
 					break
 				}
 
-				broadcastCommentsSocket(jsonBytes)
+				broadcastCommentsSocket(jsonBytes, openCommentsSockets[socket])
 				break
 
 			default:

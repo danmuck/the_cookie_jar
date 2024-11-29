@@ -22,7 +22,7 @@ func ClassroomVerificationMiddleware() gin.HandlerFunc {
 		// Grabbing classroom and making sure it exists
 		classroom, err := database.GetClassroom(c.Param("classroom_id"))
 		if err != nil || !classroom.ContainsUserID(user.Username) {
-			utils.RouteError(c, "there was a problem")
+			utils.RouteError(c, "this content does not exist")
 			c.Abort()
 			return
 		}
