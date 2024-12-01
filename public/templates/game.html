@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{ template "base_head" . }}
+        <link rel="stylesheet" href="/public/styles/game.css">
+        <script src="/public/scripts/game.js"></script>
+    </head>
+
+    <header>
+        {{ template "base_header" . }}
+    </header>
+
+    <body>
+        <div class="game-form">
+            <div class="players">
+                <h3>Players</h3>
+                <ul id="player-list"></ul>
+            </div>
+            <div class="content" id="content">
+                <div class="waiting" id="waiting">
+                    <h1>Waiting for host to start game, or all players to ready up...</h1>
+                    {{ if .IsClassProfessor }}
+                    <button id="start-btn">Start</button>
+                    {{ end }}
+                    <button id="ready-up-btn">Ready Up</button>
+                </div>
+                <div class="start-countdown" id="start-countdown" style="display: none;">
+                    <h1 id="start-timer"></h1>
+                </div>
+                <div class="question-prep" id="question-prep" style="display: none;">
+                    <h2 id="question-prep-text"></h2>
+                    <h3 id="question-prep-timer"></h3>
+                </div>
+                <div class="question" id="question" style="display: none;">
+                    <h2 id="question-text"></h2>
+                    <div class="answers" id="question-answers"></div>
+                    <br>
+                    <h3 id="question-timer" style="margin-bottom: 8px;"></h3>
+                </div>
+                <div class="leaderboard" id="leaderboard" style="display: none;">
+                    <div class="top-three" id="top-three"></div>
+                    <br>
+                    <h3 id="points"></h3>
+                    <h3 id="correct-ans"></h3>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

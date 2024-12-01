@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/models"
-	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -29,15 +29,15 @@ func AddUser(username string, password string) error {
 
 	// Creating the new user
 	user := &models.User{
-		Username:         username,
-		ClassroomIDs:     make([]string, 0),
-		Auth:             models.Credentials{PasswordHash: string(hashedPassword), AuthTokenHash: ""},
-		ProfilePictureID: "default",
+		ID:           uuid.New().String(),
+		Username:     username,
+		ClassroomIDs: make([]string, 0),
+		Auth:         models.Credentials{PasswordHash: string(hashedPassword), AuthTokenHash: ""},
 	}
 
 	// Trying to add user to the database assuming they don't already exist
 	userCollection := GetCollection("users")
-	err = userCollection.FindOne(context.TODO(), gin.H{"Username": username}).Decode(&user)
+	err = userCollection.FindOne(context.TODO(), gin.H{"username": username}).Decode(&user)
 	if err == nil {
 		return fmt.Errorf("username already exists")
 	}
@@ -54,108 +54,23 @@ Gets user model from the database.
 */
 func GetUser(username string) (*models.User, error) {
 	var user *models.User
-	err := GetCollection("users").FindOne(context.TODO(), gin.H{"Username": username}).Decode(&user)
+	err := GetCollection("users").FindOne(context.TODO(), gin.H{"username": username}).Decode(&user)
 	return user, err
 }
 
 /*
-Gets path of user's PFP
+Will search for the user in the database based on username of given user model
+and then update it to the given model.
 */
-func GetUserPFPPath(username string) string {
-	// Grabbing user model while also verifying they exist
-	user, err := GetUser(username)
-	if err != nil {
-		return "bad"
-	}
-
-	return GetMediaPath(user.ProfilePictureID)
-}
-
-/*
-Will search for the user in the database based on given username then
-update their media ID reference (pfpID)
-*/
-func UpdateUserPicture(username string, mediaId string) error {
-	// Grabbing user model while also verifying they exist
-	user, err := GetUser(username)
+func UpdateUser(user *models.User) error {
+	// Does the user exist
+	_, err := GetUser(user.GetUsername())
 	if err != nil {
 		return err
 	}
 
-	user.ProfilePictureID = mediaId
-	err = GetCollection("users").FindOneAndReplace(context.TODO(), gin.H{"Username": user.Username}, user).Err()
+	err = GetCollection("users").FindOneAndReplace(context.TODO(), gin.H{"username": user.GetUsername()}, user).Err()
 	return err
-}
-
-/*
-Will search for the user in the database based on given username then
-add/remove a classroom for them.
-*/
-func UpdateUserJoinedClassrooms(username string, classroomId string, remove bool) error {
-	// Grabbing user model while also verifying they exist
-	user, err := GetUser(username)
-	if err != nil {
-		return err
-	}
-
-	if remove {
-		user.ClassroomIDs = utils.RemoveItem(user.ClassroomIDs, classroomId)
-	} else {
-		// Is the user already in this class?
-		if utils.Contains(user.ClassroomIDs, classroomId) {
-			return fmt.Errorf("user already in this classroom")
-		}
-
-		user.ClassroomIDs = append(user.ClassroomIDs, classroomId)
-	}
-	err = GetCollection("users").FindOneAndReplace(context.TODO(), gin.H{"Username": user.Username}, user).Err()
-	return err
-}
-
-/*
-Will search for the user in the database based on given username then update
-their authentication token.
-*/
-func UpdateUserAuthToken(username string, authTokenHash string) error {
-	// Grabbing user model while also verifying they exist
-	user, err := GetUser(username)
-	if err != nil {
-		return err
-	}
-
-	user.Auth.AuthTokenHash = authTokenHash
-	err = GetCollection("users").FindOneAndReplace(context.TODO(), gin.H{"Username": user.Username}, user).Err()
-	return err
-}
-
-/*
-Deletes a users PFP from the disk and media database.
-*/
-func DeleteUserPFPFromDisk(username string) error {
-	// Grabbing user from database
-	user, err := GetUser(username)
-	if err != nil {
-		return err
-	}
-
-	return RemoveMediaFromDisk(user.ProfilePictureID)
-}
-
-/*
-Returns nil if user has no PFP ID associated with them.
-*/
-func UserHasNoPFP(username string) error {
-	// Grabbing user from database
-	user, err := GetUser(username)
-	if err != nil {
-		return err
-	}
-
-	if user.ProfilePictureID != "default" {
-		return fmt.Errorf("user has pfp")
-	}
-
-	return nil
 }
 
 /*
@@ -180,8 +95,8 @@ token for the user in the database.
 Tokens expire an hour after being handed out.
 */
 func GenerateAuthToken(username string) (string, error) {
-	// Does the user exist
-	_, err := GetUser(username)
+	// Obtaining the user
+	user, err := GetUser(username)
 	if err != nil {
 		return "", err
 	}
@@ -202,9 +117,10 @@ func GenerateAuthToken(username string) (string, error) {
 	//
 	hasher := sha256.New()
 	hasher.Write([]byte(token))
+	user.Auth.AuthTokenHash = hex.EncodeToString(hasher.Sum(nil))
 
 	// Updating user in database with new JWT auth token hash
-	err = UpdateUserAuthToken(username, hex.EncodeToString(hasher.Sum(nil)))
+	err = UpdateUser(user)
 	if err != nil {
 		return "", err
 	}
@@ -226,7 +142,7 @@ func VerifyAuthToken(username string, token string) error {
 	// Hashing the given token then comparing it to the user hashed token
 	hasher := sha256.New()
 	hasher.Write([]byte(token))
-	if hex.EncodeToString(hasher.Sum(nil)) == user.Auth.AuthTokenHash {
+	if hex.EncodeToString(hasher.Sum(nil)) == user.GetAuthTokenHash() {
 		tokenObj, _, err := new(jwt.Parser).ParseUnverified(token, jwt.MapClaims{})
 		if err != nil {
 			return err

@@ -1,0 +1,94 @@
+.game-form {
+    display: flex;
+    margin: 80px;
+    padding: 2px;
+    background-color: rgb(235, 199, 0);
+    height: 60vh;
+
+    border: solid;
+    border-radius: 20px;
+}
+
+.game-form .players {
+    margin-left: 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    background-color: rgb(235, 227, 227);
+    border: solid;
+    border-radius: 2px;
+
+    width: 180px;
+}
+.game-form .players h3 {
+    margin-top: 2px;
+    margin-bottom: 0px;
+    margin-left: 4px;
+}
+.game-form .players ul {
+    list-style: none;
+    margin-top: 8px;
+    height: 50vh;
+
+    overflow-y: auto;
+    overflow-x: auto;
+}
+.game-form .players ul li {
+    margin-left: -36px;
+}
+
+.game-form .content {
+    margin: auto;
+    padding: 10px;
+}
+.game-form .content .waiting {
+    display: flex;
+    flex-direction: column;
+}
+.game-form .content .waiting button {
+    margin-bottom: 10px;
+    border-width: 4px;
+    border-radius: 6px;
+    background-color: rgb(169, 169, 240);
+    font-size: 18px;
+
+    height: 40px;
+}
+.game-form .content .waiting button:hover {
+    cursor: pointer;
+}
+
+.game-form .content .question-prep {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.game-form .content .question-prep .question-prep-timer {
+    text-align: center;
+}
+
+.game-form .content .question {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.game-form .content .question .answers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.game-form .content .question button {
+    margin-bottom: 10px;
+    border-width: 4px;
+    border-radius: 6px;
+    background-color: rgb(169, 169, 240);
+    font-size: 18px;
+
+    height: 40px;
+}
+.game-form .content .question button:hover {
+    cursor: pointer;
+}
+
+.game-form .content .leaderboard .user {
+    margin-bottom: 8px;
+}
