@@ -131,10 +131,6 @@ func GET_ThreadsWebSocket(c *gin.Context) {
 				}
 
 				broadcastThreadsSockets(jsonBytes, openThreadsSockets[socket])
-				break
-
-			default:
-				break
 			}
 		} else {
 			break

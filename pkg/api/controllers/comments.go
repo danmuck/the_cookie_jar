@@ -133,7 +133,6 @@ func GET_CommentsWebSocket(c *gin.Context) {
 				}
 
 				broadcastCommentsSocket(jsonBytes, openCommentsSockets[socket])
-				break
 
 			case "likeComment":
 				if message["ID"].(string) == "" {
@@ -152,7 +151,6 @@ func GET_CommentsWebSocket(c *gin.Context) {
 				}
 
 				broadcastCommentsSocket(jsonBytes, openCommentsSockets[socket])
-				break
 
 			case "editComment":
 				if message["ID"].(string) == "" || message["Text"].(string) == "" {
@@ -178,10 +176,6 @@ func GET_CommentsWebSocket(c *gin.Context) {
 				}
 
 				broadcastCommentsSocket(jsonBytes, openCommentsSockets[socket])
-				break
-
-			default:
-				break
 			}
 		} else {
 			break
