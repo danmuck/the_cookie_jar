@@ -43,72 +43,72 @@ var defaultQuestions = []Question{
 		Text:          "Which animal is known as the 'King of the Jungle'?",
 		CorrectOption: 0,
 		Options:       []string{"Lion", "Elephant", "Tiger", "Giraffe"},
-	}, /*
-		{
-			Text:          "Which planet is known as the Red Planet?",
-			CorrectOption: 0,
-			Options:       []string{"Mars", "Venus", "Jupiter", "Saturn"},
-		},
-		{
-			Text:          "What is the tallest mountain in the world?",
-			CorrectOption: 3,
-			Options:       []string{"K2", "Mount Kilimanjaro", "Mount Fuji", "Mount Everest"},
-		},
-		{
-			Text:          "What color is the 'Exclamation Point' in the Nintendo game Super Mario Bros.?",
-			CorrectOption: 2,
-			Options:       []string{"Green", "Red", "Yellow", "Blue"},
-		},
-		{
-			Text:          "Which country is famous for creating the pizza?",
-			CorrectOption: 1,
-			Options:       []string{"France", "Italy", "Germany", "USA"},
-		},
-		{
-			Text:          "How many colors are there in a rainbow?",
-			CorrectOption: 4,
-			Options:       []string{"6", "7", "8", "9"},
-		},
-		{
-			Text:          "Which fruit is also known as a 'love apple'?",
-			CorrectOption: 1,
-			Options:       []string{"Orange", "Tomato", "Apple", "Banana"},
-		},
-		{
-			Text:          "In which country can you find the Eiffel Tower?",
-			CorrectOption: 0,
-			Options:       []string{"France", "Italy", "England", "Spain"},
-		},
-		{
-			Text:          "What was the first video game ever created?",
-			CorrectOption: 2,
-			Options:       []string{"Pac-Man", "Tetris", "Pong", "Space Invaders"},
-		},
-		{
-			Text:          "How many legs does an octopus have?",
-			CorrectOption: 0,
-			Options:       []string{"8", "6", "10", "12"},
-		},
-		{
-			Text:          "What is the only mammal capable of true flight?",
-			CorrectOption: 3,
-			Options:       []string{"Bat", "Swan", "Flying Squirrel", "Bird"},
-		},
-		{
-			Text:          "What is the capital of Canada?",
-			CorrectOption: 1,
-			Options:       []string{"Toronto", "Ottawa", "Vancouver", "Montreal"},
-		},
-		{
-			Text:          "Which of the following is NOT a primary color?",
-			CorrectOption: 2,
-			Options:       []string{"Red", "Blue", "Green", "Yellow"},
-		},
-		{
-			Text:          "Which vegetable is known for making people cry when chopped?",
-			CorrectOption: 0,
-			Options:       []string{"Onion", "Garlic", "Carrot", "Cucumber"},
-		},*/
+	},
+	{
+		Text:          "Which planet is known as the Red Planet?",
+		CorrectOption: 0,
+		Options:       []string{"Mars", "Venus", "Jupiter", "Saturn"},
+	},
+	{
+		Text:          "What is the tallest mountain in the world?",
+		CorrectOption: 3,
+		Options:       []string{"K2", "Mount Kilimanjaro", "Mount Fuji", "Mount Everest"},
+	},
+	{
+		Text:          "What color is the 'Exclamation Point' in the Nintendo game Super Mario Bros.?",
+		CorrectOption: 2,
+		Options:       []string{"Green", "Red", "Yellow", "Blue"},
+	},
+	{
+		Text:          "Which country is famous for creating the pizza?",
+		CorrectOption: 1,
+		Options:       []string{"France", "Italy", "Germany", "USA"},
+	},
+	{
+		Text:          "How many colors are there in a rainbow?",
+		CorrectOption: 4,
+		Options:       []string{"6", "7", "8", "9"},
+	},
+	{
+		Text:          "Which fruit is also known as a 'love apple'?",
+		CorrectOption: 1,
+		Options:       []string{"Orange", "Tomato", "Apple", "Banana"},
+	},
+	{
+		Text:          "In which country can you find the Eiffel Tower?",
+		CorrectOption: 0,
+		Options:       []string{"France", "Italy", "England", "Spain"},
+	},
+	{
+		Text:          "What was the first video game ever created?",
+		CorrectOption: 2,
+		Options:       []string{"Pac-Man", "Tetris", "Pong", "Space Invaders"},
+	},
+	{
+		Text:          "How many legs does an octopus have?",
+		CorrectOption: 0,
+		Options:       []string{"8", "6", "10", "12"},
+	},
+	{
+		Text:          "What is the only mammal capable of true flight?",
+		CorrectOption: 3,
+		Options:       []string{"Bat", "Swan", "Flying Squirrel", "Bird"},
+	},
+	{
+		Text:          "What is the capital of Canada?",
+		CorrectOption: 1,
+		Options:       []string{"Toronto", "Ottawa", "Vancouver", "Montreal"},
+	},
+	{
+		Text:          "Which of the following is NOT a primary color?",
+		CorrectOption: 2,
+		Options:       []string{"Red", "Blue", "Green", "Yellow"},
+	},
+	{
+		Text:          "Which vegetable is known for making people cry when chopped?",
+		CorrectOption: 0,
+		Options:       []string{"Onion", "Garlic", "Carrot", "Cucumber"},
+	},
 }
 
 var activeGames = make(map[string]*Game)
@@ -293,7 +293,7 @@ func (game *Game) run() {
 			"Text":    question.Text,
 			"Options": question.Options,
 		})
-		game.gameCountdown(5)
+		game.gameCountdown(6)
 
 		// Display leaderboard, points, and right answer
 		game.sendAllPlayers(map[string]interface{}{
