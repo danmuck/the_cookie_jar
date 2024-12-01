@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{ template "base_head" . }}
+        <link rel="stylesheet" href="/public/styles/classlist.css">
+    </head>
+
+    <header>
+        {{ template "base_header" . }}
+    </header>
+
+    <body>
+        {{ if gt (len .CreatedClassList) 0 }}
+        <div class="created-class-list">
+            <h2>Created Classes</h2>
+            <div class="class-list">
+                {{ range .CreatedClassList }}
+                <div class="class">
+                    <a href="{{ .ID }}">
+                        <h4 class="title">{{ .Name }}</h4>
+                    </a>
+                    <h5 class="student-count">Students: {{ len .StudentIDs }}</h5>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+        {{ if gt (len .JoinedClassList) 0 }}
+        <div class="joined-class-list">
+            <h2>Joined Classes</h2>
+            <div class="class-list">
+                {{ range .JoinedClassList }}
+                <div class="class">
+                    <a href="{{ .ID }}">
+                        <h4 class="title">{{ .Name }}</h4>
+                    </a>
+                    <h5 class="student-count">Students: {{ len .StudentIDs }}</h5>
+                    <h5 class="professor">Professor: {{ .ProfessorID }}</h5>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+        <div class="create-class">
+            <h2>Create a Class</h2>
+            <form action="create-classroom" method="POST">
+                <input type="text" name="class-name" required>
+                <button type="submit">Create Classroom</button>
+            </form>
+        </div>
+    </body>
+</html>

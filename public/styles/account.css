@@ -1,0 +1,40 @@
+.profile-picture-form {
+    margin: 12px;
+    background-color: rgb(231, 230, 154);
+
+    border: solid;
+    border-width: 1px;
+    border-radius: 4px;
+    padding: 14px;
+}
+.profile-picture-form h3 {
+    margin-top: 2px;
+}
+.profile-picture-form .upload-form {
+    display: flex;
+}
+.profile-picture-form .uploaded-image  {
+    border: solid;
+    border-width: 2px;
+    border-radius: 4px;
+    margin-right: 12px;
+}
+.profile-picture-form .upload-form .upload-btns {
+    display: flex;
+    flex-direction: column;
+}
+.profile-picture-form .upload-form .upload-btns .browse-btn  {
+    margin-top: auto;
+}
+.profile-picture-form .upload-form .upload-btns .upload-btn  {
+    margin-top: 8px;
+    width: 60px;
+}
+.profile-picture-form h6 {
+    margin-top: 8px;
+    margin-bottom: 18px;
+}
+.profile-picture-form h5 {
+    margin-top: 8px;
+    margin-bottom: 0px;
+}

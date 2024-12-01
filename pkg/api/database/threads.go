@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/models"
 	"github.com/gin-gonic/gin"
@@ -11,17 +12,19 @@ import (
 /*
 Adds a thread to the database.
 */
-func AddThread(boardID string, name string) error {
-	// Grab board to add thread to, also making sure board exists
-	board, err := GetBoard(boardID)
+func AddThread(username string, title string, classroomId string, comment string) (*models.Thread, error) {
+	// Making sure the user exists
+	_, err := GetUser(username)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Creating the new thread
 	thread := &models.Thread{
 		ID:         uuid.New().String(),
-		Name:       name,
+		Title:      title,
+		Date:       time.Now().Format("01/02/2006"),
+		AuthorID:   username,
 		CommentIDs: make([]string, 0),
 	}
 
@@ -29,17 +32,37 @@ func AddThread(boardID string, name string) error {
 	threadCollection := GetCollection("threads")
 	_, err = threadCollection.InsertOne(context.TODO(), thread)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	// Associating board with the thread directly
-	board.ThreadIDs = append(board.ThreadIDs, thread.ID)
-	err = UpdateBoard(board)
+	// Associating thread with the classroom
+	err = UpdateClassroomThreads(classroomId, thread.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Adding the first comment to the thread
+	_, err = AddComment(username, comment, thread.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return thread, nil
+}
+
+/*
+Will search for the thread in the database and then add a comment in it.
+*/
+func UpdateThreadComments(threadId string, commentId string) error {
+	// Grab the thread and verify it exists
+	thread, err := GetThread(threadId)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	thread.CommentIDs = append(thread.CommentIDs, commentId)
+	err = GetCollection("threads").FindOneAndReplace(context.TODO(), gin.H{"_id": threadId}, thread).Err()
+	return err
 }
 
 /*
@@ -49,19 +72,4 @@ func GetThread(id string) (*models.Thread, error) {
 	var thread *models.Thread
 	err := GetCollection("threads").FindOne(context.TODO(), gin.H{"_id": id}).Decode(&thread)
 	return thread, err
-}
-
-/*
-Will search for the clasroom in the database based on ID of given thread
-model and then update it to the given model.
-*/
-func UpdateThread(thread *models.Thread) error {
-	// Does the Thread exist
-	_, err := GetThread(thread.ID)
-	if err != nil {
-		return err
-	}
-
-	err = GetCollection("threads").FindOneAndReplace(context.TODO(), gin.H{"_id": thread.ID}, thread).Err()
-	return err
 }

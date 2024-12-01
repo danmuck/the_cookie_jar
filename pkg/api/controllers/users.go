@@ -1,140 +1,73 @@
 package controllers
 
 import (
-	"context"
 	"net/http"
-	"os"
+	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
-	"github.com/danmuck/the_cookie_jar/pkg/api/models"
+	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
-func POST_User(c *gin.Context) {
-	username := c.Param("username")
-	password := c.Param("password")
-	if password == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":  "cannot use blank password",
-			"result": "",
-		})
+func POST_UserRegister(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+	password_confirm := c.PostForm("password_confirm")
+
+	// Making sure passwords match
+	if password != password_confirm {
+		utils.RouteError(c, "passwords do not match")
 		return
 	}
+
+	// No blank username/password
+	if username == "" || password == "" {
+		utils.RouteError(c, "blank username/password not allowed")
+		return
+	}
+
+	// Attempting to add user to the database
 	err := database.AddUser(username, password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":    err.Error(),
-			"type":     "POST",
-			"who":      username,
-			"password": password,
-		})
+		utils.RouteError(c, err.Error())
 		return
 	}
 
-	user, err := database.GetUser(username)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":    err.Error(),
-			"type":     "POST",
-			"who":      username,
-			"password": password,
-		})
-		return
-	}
-	user.ClassroomIDs = append(user.ClassroomIDs, os.Getenv("dev_class_id"))
-	err = database.UpdateUser(user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":    err.Error(),
-			"type":     "POST",
-			"who":      username,
-			"password": password,
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User added successfully",
-		"type":    "POST",
-	})
+	c.Redirect(http.StatusSeeOther, "/?register=true")
 }
 
-func DEL_User(c *gin.Context) {
-	id := c.Query("id")
-	coll := database.GetCollection("users")
-	filter := bson.M{"_id": id}
+func POST_UserLogin(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
 
-	var result models.User
-	err := coll.FindOneAndDelete(context.TODO(), filter).Decode(&result)
+	// If the password matches, generate an auth token
+	err := database.VerifyPassword(username, password)
 	if err != nil {
-		c.String(http.StatusNotFound, "User does not exist")
+		utils.RouteError(c, "there was a problem logging in, please try again and verify your password")
+		return
+	}
+	token, err := database.GenerateAuthToken(username)
+	if err != nil {
+		utils.RouteError(c, "there was a problem logging in, please try again and verify your password")
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User deleted successfully",
-		"type":    "DELETE",
-		"who":     result.Username,
-		"user":    result,
-	})
+	c.SetCookie("jwt_token", token, int(time.Hour.Seconds()), "/", "/", false, true)
+	c.Redirect(http.StatusSeeOther, "/")
 }
 
-func GET_Username(c *gin.Context) {
-	username := c.Param("username")
-	user, err := database.GetUser(username)
+func POST_UserLogout(c *gin.Context) {
+	_, err := database.GetUser(c.GetString("username"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		utils.RouteError(c, "there was a problem logging out, please try again")
+		return
+	}
+	err = database.UpdateUserAuthToken(c.GetString("username"), "")
+	if err != nil {
+		utils.RouteError(c, "there was a problem logging out, please try again")
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User found successfully",
-		"type":    "GET",
-		"who":     username,
-		"user":    user,
-	})
-}
-
-func PUT_User(c *gin.Context) {
-	id := c.Param("id")
-	coll := database.GetCollection("users")
-	filter := bson.M{"_id": id}
-
-	var user models.User
-	err := coll.FindOne(context.TODO(), filter).Decode(&user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return
-	}
-
-	queries := []string{"username", "password", "org", "status"}
-	for _, param := range queries {
-		value := c.Query(param)
-		if value == "" {
-			continue
-		}
-		switch param {
-		case "username":
-			user.Username = value
-		case "password":
-			user.Auth.PasswordHash = ""
-		default:
-		}
-	}
-
-	result, err := coll.ReplaceOne(context.TODO(), filter, user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":  err.Error(),
-			"result": user,
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User updated successfully",
-		"result":  result,
-		"user":    user,
-	})
+	c.SetCookie("jwt_token", "", 1, "/", "/", false, true)
+	c.Redirect(http.StatusSeeOther, "/")
 }

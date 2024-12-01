@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{ template "base_head" . }}
+        <link rel="stylesheet" href="/public/styles/account.css">
+    </head>
+
+    <header>
+        {{ template "base_header" . }}
+    </header>
+
+    <body>
+        <div class="profile-picture-form">
+            <h3>Profile Picture</h3>
+            <div class="upload-form">
+                <img class="uploaded-image" src="/pfp/{{ .Username }}" width=100px height=100px>
+                <form class="upload-btns" action="/account-pfp-upload" method="post" enctype="multipart/form-data">
+                    <input class="browse-btn" id="browse-btn" name="image" type="file" accept=".jpg, .jpeg, .png">
+                    <input class="upload-btn" type="submit" value="Upload">
+                </form>
+            </div>
+            <h6>Please select a less than 10MB JPG or PNG profile picture.</h6>
+            {{ if gt (len .ImageUploadMessage) 0 }}
+            <h5 style="color: rgb(240, 94, 94)">{{ .ImageUploadMessage }}</h5>
+            {{ end }}
+        </div>
+    </body>
+</html>

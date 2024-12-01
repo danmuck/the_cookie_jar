@@ -1,62 +1,67 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
+	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func ClassroomIndex(c *gin.Context) {
-	id := c.Param("classroom_id")
-	c.HTML(http.StatusOK, "classroom.tmpl", gin.H{
-		"title":         "Classroom",
-		"sub_title":     id,
-		"body":          "New classroom stuff or information.",
-		"new_classroom": "true",
-	})
-}
-
-func GET_NewClassroom(c *gin.Context) {
-	err := c.Query("error")
-	if err != "" {
-		c.HTML(http.StatusOK, "classroom.tmpl", gin.H{
-			"error": err,
-		})
-
-	}
-	c.HTML(http.StatusOK, "classroom.tmpl", gin.H{
-		"title":         "Classroom -- New",
-		"sub_title":     "Some Classroom Name Probably",
-		"body":          "Welcome to the class",
-		"new_classroom": "true",
-	})
-}
-
-func POST_Classroom(c *gin.Context) {
-	name := c.PostForm("name")
-	username := c.GetString("username")
-	if username != "" {
-		err := database.AddClassroom(username, name)
-		if err != nil {
-			e := fmt.Sprintf("/classrooms/new?error=%v", err)
-			c.Redirect(http.StatusNotFound, e)
-		}
+func POST_CreateClassroom(c *gin.Context) {
+	if c.PostForm("class-name") == "" {
+		utils.RouteError(c, "class name cannot be empty")
+		return
 	}
 
-	c.HTML(http.StatusOK, "classroom.tmpl", gin.H{
-		"title":         name,
-		"sub_title":     username,
-		"body":          "Welcome to the class",
-		"new_classroom": "false",
+	database.AddClassroom(c.GetString("username"), c.PostForm("class-name"))
+	c.Redirect(http.StatusSeeOther, "/")
+}
+
+func GET_Classroom(c *gin.Context) {
+	c.HTML(http.StatusOK, "class.html", gin.H{
+		"IsLoggedIn":      true,
+		"Username":        c.GetString("username"),
+		"IsProfessor":     c.GetBool("isClassProfessor"),
+		"ClassName":       c.GetString("className"),
+		"SettingsMessage": c.Query("settingsMessage"),
 	})
 }
 
-func PUT_Classroom(c *gin.Context) {
+func POST_LeaveClassroom(c *gin.Context) {
+	if c.GetBool("isClassProfessor") {
+		c.Redirect(http.StatusSeeOther, "/"+c.Param("classroom_id")+"/?settingsMessage=You+are+the+professor.")
+		return
+	}
 
+	database.UpdateClassroomStudents(c.Param("classroom_id"), c.GetString("username"), true)
+	c.Redirect(http.StatusSeeOther, "/")
 }
 
-func DELETE_Classroom(c *gin.Context) {
+func POST_AddStudent(c *gin.Context) {
+	if c.PostForm("username") == c.GetString("username") {
+		c.Redirect(http.StatusSeeOther, "/"+c.Param("classroom_id")+"/?settingsMessage=Cannot+add+yourself.")
+		return
+	}
 
+	err := database.UpdateClassroomStudents(c.Param("classroom_id"), c.PostForm("username"), false)
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/"+c.Param("classroom_id")+"/?settingsMessage=Something+went+wrong.")
+	} else {
+		c.Redirect(http.StatusSeeOther, "/"+c.Param("classroom_id")+"/?settingsMessage=Added+the+user!")
+	}
+}
+
+func POST_RemoveStudent(c *gin.Context) {
+	if c.PostForm("username") == c.GetString("username") {
+		c.Redirect(http.StatusSeeOther, "/"+c.Param("classroom_id")+"/?settingsMessage=Cannot+remove+yourself.")
+		return
+	}
+
+	err := database.UpdateClassroomStudents(c.Param("classroom_id"), c.PostForm("username"), true)
+	if err != nil {
+		c.Redirect(http.StatusSeeOther, "/"+c.Param("classroom_id")+"/?settingsMessage=Something+went+wrong.")
+	} else {
+		c.Redirect(http.StatusSeeOther, "/"+c.Param("classroom_id")+"/?settingsMessage=Removed+the+user!")
+	}
 }

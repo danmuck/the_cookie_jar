@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/models"
+	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -12,20 +13,20 @@ import (
 Adds a classroom to the database.
 */
 func AddClassroom(username string, name string) error {
-	// Grab user who is making classroom, also making sure they exist
-	user, err := GetUser(username)
+	// Making sure the user exists
+	_, err := GetUser(username)
 	if err != nil {
 		return err
 	}
 
 	// Creating the new classroom
 	classroom := &models.Classroom{
-		ID:            uuid.New().String(),
-		Name:          name,
-		ProfessorID:   user.ID,
-		InstructorIDs: make([]string, 0),
-		StudentIDs:    make([]string, 0),
-		BoardIDs:      make([]string, 0),
+		ID:          uuid.New().String(),
+		Name:        name,
+		ProfessorID: username,
+		StudentIDs:  make([]string, 0),
+		ThreadIDs:   make([]string, 0),
+		Game:        models.ClassGame{},
 	}
 
 	// Trying to add classroom to database
@@ -36,8 +37,7 @@ func AddClassroom(username string, name string) error {
 	}
 
 	// Associating user with the classroom directly
-	user.ClassroomIDs = append(user.ClassroomIDs, classroom.ID)
-	err = UpdateUser(user)
+	err = UpdateUserJoinedClassrooms(username, classroom.ID, false)
 	if err != nil {
 		return err
 	}
@@ -55,16 +55,42 @@ func GetClassroom(id string) (*models.Classroom, error) {
 }
 
 /*
-Will search for the clasroom in the database based on ID of given classroom
-model and then update it to the given model.
+Will search for the classroom and user in the database and then add/remove a
+classroom for them.
 */
-func UpdateClassroom(classroom *models.Classroom) error {
-	// Does the classroom exist
-	_, err := GetClassroom(classroom.ID)
+func UpdateClassroomStudents(classroomId string, username string, remove bool) error {
+	// Grab the classroom and verify it exists
+	classroom, err := GetClassroom(classroomId)
 	if err != nil {
 		return err
 	}
 
-	err = GetCollection("classrooms").FindOneAndReplace(context.TODO(), gin.H{"_id": classroom.ID}, classroom).Err()
+	// Adding/removing classroom from the user
+	err = UpdateUserJoinedClassrooms(username, classroomId, remove)
+	if err != nil {
+		return err
+	}
+
+	if remove {
+		classroom.StudentIDs = utils.RemoveItem(classroom.StudentIDs, username)
+	} else {
+		classroom.StudentIDs = append(classroom.StudentIDs, username)
+	}
+	err = GetCollection("classrooms").FindOneAndReplace(context.TODO(), gin.H{"_id": classroomId}, classroom).Err()
+	return err
+}
+
+/*
+Will search for the classroom in the database and then add a thread in it.
+*/
+func UpdateClassroomThreads(classroomId string, threadId string) error {
+	// Grab the classroom and verify it exists
+	classroom, err := GetClassroom(classroomId)
+	if err != nil {
+		return err
+	}
+
+	classroom.ThreadIDs = append(classroom.ThreadIDs, threadId)
+	err = GetCollection("classrooms").FindOneAndReplace(context.TODO(), gin.H{"_id": classroomId}, classroom).Err()
 	return err
 }

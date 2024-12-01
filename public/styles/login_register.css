@@ -1,0 +1,68 @@
+.account_management {
+    position: absolute;
+    display: flex;
+    top: 13dvh;
+    right: 0;
+    width: 40%;
+    height: max(25dvh, 600px);
+    border: 4px solid white;
+    border-radius: 20px;
+    background-color: rgba(0, 91, 187);
+    margin-right: 2rem;
+}
+
+.account_management .register {
+    flex: 1 0 auto;
+    border-right: 4px solid black;
+    padding-left: 1rem;
+    padding-top: 1rem;
+}
+
+.account_management .login {
+    flex: 1 0 auto;
+    padding-left: 1rem;
+    padding-top: 1rem;
+}
+
+.register form,
+.login form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form_label {
+    flex: 1 0 auto;
+}
+
+.register form label,
+.login form label {
+    margin-top: 2rem;
+    font-weight: 600;
+    color: white;
+}
+
+.register form input,
+.login form input {
+    width: 90%;
+    padding: 5px;
+    border: 2px solid black;
+}
+
+.register form input:focus,
+.login form input:focus {
+    outline: none;
+}
+
+.register form button,
+.login form button {
+    width: 90%;
+    margin-top: 1.5rem;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 5px;
+}
+
+.register h2,
+.login h2 {
+    color: white;
+}
