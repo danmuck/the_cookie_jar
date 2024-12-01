@@ -26,7 +26,6 @@ func AddClassroom(username string, name string) error {
 		ProfessorID: username,
 		StudentIDs:  make([]string, 0),
 		ThreadIDs:   make([]string, 0),
-		Game:        models.ClassGame{},
 	}
 
 	// Trying to add classroom to database

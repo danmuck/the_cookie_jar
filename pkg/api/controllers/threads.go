@@ -42,15 +42,20 @@ func GET_Threads(c *gin.Context) {
 }
 
 // All open WebSockets, also a mutex to prevent race conditions
-var openThreadsSockets = make(map[*websocket.Conn]bool)
+var openThreadsSockets = make(map[*websocket.Conn]string)
 var openThreadsSocketsMutex sync.Mutex
 
-// Broadcasts a message to all open sockets
-func broadcastThreadsSockets(data []byte) {
+// Broadcasts a message to all open sockets of a particular class ID
+func broadcastThreadsSockets(data []byte, id string) {
 	openThreadsSocketsMutex.Lock()
 	defer openThreadsSocketsMutex.Unlock()
 
 	for socket := range openThreadsSockets {
+		// This open board isn't the same one we want to broadcast to
+		if openThreadsSockets[socket] != id {
+			continue
+		}
+
 		err := socket.WriteMessage(websocket.TextMessage, data)
 		if err != nil {
 			socket.Close()
@@ -70,7 +75,7 @@ func GET_ThreadsWebSocket(c *gin.Context) {
 
 	// Add new WebSocket to open sockets
 	openThreadsSocketsMutex.Lock()
-	openThreadsSockets[socket] = true
+	openThreadsSockets[socket] = c.Param("classroom_id")
 	openThreadsSocketsMutex.Unlock()
 	defer func() {
 		openThreadsSocketsMutex.Lock()
@@ -125,11 +130,7 @@ func GET_ThreadsWebSocket(c *gin.Context) {
 					break
 				}
 
-				broadcastThreadsSockets(jsonBytes)
-				break
-
-			default:
-				break
+				broadcastThreadsSockets(jsonBytes, openThreadsSockets[socket])
 			}
 		} else {
 			break

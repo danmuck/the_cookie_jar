@@ -12,7 +12,7 @@ func BaseRouter() *gin.Engine {
 	router := gin.Default()
 
 	// Middleware that will be used by ALL routes
-	router.Use(middleware.DefaultMiddleware())
+	router.Use( /*gin.Recovery(), */ middleware.DefaultMiddleware())
 
 	// Loading our templates and CSS stylesheets
 	router.LoadHTMLGlob("/root/public/templates/*")
@@ -50,6 +50,12 @@ func BaseRouter() *gin.Engine {
 				commentRoutes.GET("/", controllers.GET_Comments)
 				commentRoutes.GET("/ws", controllers.GET_CommentsWebSocket)
 			}
+		}
+
+		gameRoutes := classroomRoutes.Group("/class-game")
+		{
+			gameRoutes.GET("/", controllers.GET_Game)
+			gameRoutes.GET("/ws", controllers.GET_GameWebSocket)
 		}
 	}
 
