@@ -2,18 +2,39 @@ services:
   app:
     container_name: "cookie_lms"
     build: .
-    ports:
-      - "8080:8080"
     environment:
       WAIT_HOSTS: database:27017
       GOCACHE: /.go-build/
       MONGODB_URI: ${MONGODB_URI:-mongodb://database:27017/}
       DB_NAME: ${DB_NAME:-the_cookie_jar}
       JWT_AUTH_TOKEN_SECRET: ${JWT_AUTH_TOKEN_SECRET:-amsor893u7a2555d01392489186nr03osldkrb4c940d0ad7f4e2b44b95f5a96b}
+    ports: # MUST COMMENT FOR PROD
+      - "8080:8080" # MUST COMMENT FOR PROD
+    # labels:
+    #   traefik.enable: true
+    #   traefik.docker.network: proxy
+    #   traefik.http.routers.cookiejar-secure.entrypoints: websecure
+    #   traefik.http.routers.cookiejar-secure.rule: Host(`thecookiejar.gensosekai.com`)
+    #   traefik.http.routers.cookiejar-secure.service: cookiejar
+    #   traefik.http.routers.cookiejar-secure.tls: true
+    #   traefik.http.routers.cookiejar-secure.tls.certresolver: lets-encrypt
+    #   traefik.http.services.cookiejar.loadbalancer.server.port: 8080
+    #   com.centurylinklabs.watchtower.enable: "true"
+    # networks:
+    #   WebGateway:
+    #     ipv4_address: 10.10.10.180
+    restart: unless-stopped
 
   database:
     container_name: "database_m"
     image: mongo
     attach: false
-    # ports:
-    #   - "27017:27017"
+    ports: # MUST COMMENT FOR PROD
+      - "27017:27017" # MUST COMMENT FOR PROD
+    # networks:
+    #   WebGateway:
+    #     ipv4_address: 10.10.10.181
+    restart: unless-stopped
+# networks:
+#   WebGateway:
+#     external: true

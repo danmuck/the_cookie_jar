@@ -11,6 +11,10 @@
     </header>
 
     <body>
+        {{ if .IsClassProfessor }}
+        <div id="isProf" style="display: none;"></div>
+        {{ end }}
+        <p id="username" style="display: none;">{{ .Username }}</p>
         <div class="title">
             <h2 class="back-arrow" id="back-arrow">←</h2>
             <h2 class="text">{{ .ThreadTitle }}</h4>

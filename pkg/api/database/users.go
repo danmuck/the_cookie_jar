@@ -68,7 +68,22 @@ func GetUserPFPPath(username string) string {
 		return "bad"
 	}
 
-	return GetMediaPath(user.ProfilePictureID)
+	// If there is no path remove the media
+	path, err := GetMediaPath(user.ProfilePictureID)
+	if err != nil {
+		RemoveMedia(user.ProfilePictureID)
+		UpdateUserPicture(user.Username, "default")
+	}
+
+	// If the media does not exist at path
+	_, err = os.Stat(path)
+	if err != nil {
+		RemoveMedia(user.ProfilePictureID)
+		UpdateUserPicture(user.Username, "default")
+		return "public/assets/default_pfp.jpg"
+	}
+
+	return path
 }
 
 /*
