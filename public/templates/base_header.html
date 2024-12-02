@@ -9,13 +9,12 @@
   </a>
   {{ if .IsLoggedIn }}
   <div id="profile-btn">
-    <div id="profile-btn-text">{{ .Username }} &lArr;</div>
+    <div id="profile-btn-text">{{ .Username }} &#x2B9F;</div>
     <div id="profile-dropdown">
       <div
         class="profile-dropdown-btn"
         id="profile-dropdown-account-btn"
-        onclick="window.location.href='/account';"
-      >
+        onclick="window.location.href='/account';">
         Account
       </div>
       <div class="profile-dropdown-btn" id="profile-dropdown-logout-btn">
@@ -29,8 +28,7 @@
               color: inherit;
               font: inherit;
               text-decoration: none;
-            "
-          >
+            ">
             Logout
           </button>
         </form>
