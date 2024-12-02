@@ -3,6 +3,12 @@ let socket = null;
 function receiveComment(data) {
     const comment = JSON.parse(data);
     if (comment.Type === "newComment") {
+        let editBtn = ""
+        const authorId = document.getElementById("username").textContent
+        if (document.getElementById("isProf") || (authorId && authorId == comment.AuthorID)) {
+            editBtn = '<h6 class="action-btn-edit">Edit</h6>'
+        }
+
         const newCommentHTML = `
         <li class="comment">
             <div class="body">
@@ -13,9 +19,9 @@ function receiveComment(data) {
                 </div>
             </div>
             <div class="actions" data-id="` + comment.ID + `">
-                <h6 class="action-btn-like" data-amount="0">Like</h6>
-                <h6 class="action-btn-edit">Edit</h6>
-            </div>
+                <h6 class="action-btn-like" data-amount="0">Like</h6> ` +
+                editBtn +
+            `</div>
         </li>
     `;
 

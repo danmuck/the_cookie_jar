@@ -5,12 +5,18 @@ import (
 	"os"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
+	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 func GET_AccountPFP(c *gin.Context) {
 	path := database.GetUserPFPPath(c.Param("account_id"))
+	if path == "bad" {
+		utils.RouteError(c, "something went wrong grabbing account pfp")
+		return
+	}
+
 	c.Redirect(http.StatusTemporaryRedirect, "/"+path)
 }
 
@@ -71,6 +77,7 @@ func POST_AccountPFPUpload(c *gin.Context) {
 	// Deleting old profile picture from disk if they had one
 	if err = database.UserHasNoPFP(c.GetString("username")); err != nil {
 		if err = database.DeleteUserPFPFromDisk(c.GetString("username")); err != nil {
+			c.Redirect(http.StatusSeeOther, "/account?imageUploadMessage=Try+again")
 			return
 		}
 	}

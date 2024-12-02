@@ -87,12 +87,12 @@ func GetMedia(id string) (*models.Media, error) {
 /*
 Grabs path of on-disk media.
 */
-func GetMediaPath(id string) string {
+func GetMediaPath(id string) (string, error) {
 	// Grabbing media from database
 	media, err := GetMedia(id)
 	if err != nil {
-		return "public/assets/default_pfp.jpg"
+		return "public/assets/default_pfp.jpg", err
 	}
 
-	return media.Path
+	return media.Path, nil
 }
