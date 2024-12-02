@@ -1,20 +1,42 @@
 {{ define "base_header" }}
-    <nav id="header-bar">
-        <a href="/">
-            <img id="home-btn" src="/public/assets/logo.jpg" style="width:76px;height:76px;">
-        </a>
-        {{ if .IsLoggedIn }}
-        <div id="profile-btn">
-            <div id="profile-btn-text">{{ .Username }} ⮟</div>
-            <div id="profile-dropdown">
-                <div class="profile-dropdown-btn" id="profile-dropdown-account-btn" onclick="window.location.href='/account';">Account</div>
-                <div class="profile-dropdown-btn" id="profile-dropdown-logout-btn">
-                    <form action="/logout" method="post">
-                        <button type="submit" style="background: none; border: none; padding: 0px; color: inherit; font: inherit; text-decoration: none;">Logout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {{ end }}
-    </nav>
+<nav id="header-bar">
+  <a href="/">
+    <img
+      id="home-btn"
+      src="/public/assets/logo.jpg"
+      style="width: 76px; height: 76px"
+    />
+  </a>
+  {{ if .IsLoggedIn }}
+  <div id="profile-btn">
+    <div id="profile-btn-text">{{ .Username }} &lArr;</div>
+    <div id="profile-dropdown">
+      <div
+        class="profile-dropdown-btn"
+        id="profile-dropdown-account-btn"
+        onclick="window.location.href='/account';"
+      >
+        Account
+      </div>
+      <div class="profile-dropdown-btn" id="profile-dropdown-logout-btn">
+        <form action="/logout" method="post">
+          <button
+            type="submit"
+            style="
+              background: none;
+              border: none;
+              padding: 0px;
+              color: inherit;
+              font: inherit;
+              text-decoration: none;
+            "
+          >
+            Logout
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {{ end }}
+</nav>
 {{ end }}
