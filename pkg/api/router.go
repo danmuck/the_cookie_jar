@@ -24,6 +24,8 @@ func BaseRouter() *gin.Engine {
 	// Default user PFP
 	database.AddDefaultMedia("default", "public/assets/default_pfp.jpg", "")
 
+	router.GET("/names", controllers.GET_AllUsers_DEV)
+
 	router.GET("/", controllers.GET_Homepage)
 	router.POST("/register", controllers.POST_UserRegister)
 	router.POST("/login", controllers.POST_UserLogin)

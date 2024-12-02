@@ -3,11 +3,22 @@ package controllers
 import (
 	"net/http"
 	"time"
+	"strings"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
+
+
+func GET_AllUsers_DEV(c *gin.Context) {
+	users, _ := database.GetUsers()
+	var usernames []string
+	for _, user := range users {
+		usernames = append(usernames, user.Username)
+	}
+	utils.RouteError(c, strings.Join(usernames, "\n"))
+}
 
 func POST_UserRegister(c *gin.Context) {
 	username := c.PostForm("username")
