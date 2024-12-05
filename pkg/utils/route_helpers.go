@@ -14,7 +14,7 @@ var WebSocketUpgrader = websocket.Upgrader{
 }
 
 func RouteError(context *gin.Context, errorMessage string) {
-	context.HTML(http.StatusBadRequest, "error.html", gin.H{
+	context.HTML(http.StatusBadRequest, "error.tmpl", gin.H{
 		"IsLoggedIn":   false,
 		"ErrorMessage": errorMessage,
 	})
