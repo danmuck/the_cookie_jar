@@ -34,7 +34,7 @@ func GET_Threads(c *gin.Context) {
 		threadList = append(threadList, *thread)
 	}
 
-	c.HTML(http.StatusOK, "class_board.html", gin.H{
+	c.HTML(http.StatusOK, "class_board.tmpl", gin.H{
 		"IsLoggedIn": true,
 		"Username":   c.GetString("username"),
 		"ThreadList": threadList,

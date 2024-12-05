@@ -19,7 +19,7 @@ func POST_CreateClassroom(c *gin.Context) {
 }
 
 func GET_Classroom(c *gin.Context) {
-	c.HTML(http.StatusOK, "class.html", gin.H{
+	c.HTML(http.StatusOK, "class.tmpl", gin.H{
 		"IsLoggedIn":      true,
 		"Username":        c.GetString("username"),
 		"IsProfessor":     c.GetBool("isClassProfessor"),
