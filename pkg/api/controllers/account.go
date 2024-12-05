@@ -52,6 +52,7 @@ func POST_AccountPFPUpload(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, "/account?imageUploadMessage=There+was+a+problem+reading+the+image.")
 		return
 	}
+	
 	imageType := http.DetectContentType(imageBuffer)
 	if imageType == "image/jpeg" {
 		uploadPathFull += ".jpg"
