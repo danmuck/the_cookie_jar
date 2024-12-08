@@ -3,16 +3,35 @@ package controllers
 import (
 	"net/http"
 	"time"
+	"strings"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
+
+func GET_AllUsers_DEV(c *gin.Context) {
+	users, _ := database.GetUsers()
+	var usernames []string
+	for _, user := range users {
+		usernames = append(usernames, user.Username)
+	}
+	utils.RouteError(c, strings.Join(usernames, "\n"))
+}
+
 func POST_UserRegister(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 	password_confirm := c.PostForm("password_confirm")
+	recaptchaResponse := c.PostForm("g-recaptcha-response")
+
+	// Verify reCAPTCHA first
+	success, err := utils.VerifyRecaptcha(recaptchaResponse)
+	if err != nil || !success {
+		utils.RouteError(c, "please complete the reCAPTCHA verification")
+		return
+	}
 
 	// Making sure passwords match
 	if password != password_confirm {
@@ -27,7 +46,7 @@ func POST_UserRegister(c *gin.Context) {
 	}
 
 	// Attempting to add user to the database
-	err := database.AddUser(username, password)
+	err = database.AddUser(username, password)
 	if err != nil {
 		utils.RouteError(c, err.Error())
 		return
@@ -39,9 +58,17 @@ func POST_UserRegister(c *gin.Context) {
 func POST_UserLogin(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
+	recaptchaResponse := c.PostForm("g-recaptcha-response")
+
+	// Verify reCAPTCHA first
+	success, err := utils.VerifyRecaptcha(recaptchaResponse)
+	if err != nil || !success {
+		utils.RouteError(c, "please complete the reCAPTCHA verification")
+		return
+	}
 
 	// If the password matches, generate an auth token
-	err := database.VerifyPassword(username, password)
+	err = database.VerifyPassword(username, password)
 	if err != nil {
 		utils.RouteError(c, "there was a problem logging in, please try again and verify your password")
 		return
