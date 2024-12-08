@@ -35,7 +35,7 @@ func GET_Comments(c *gin.Context) {
 		commentList = append(commentList, *comment)
 	}
 
-	c.HTML(http.StatusOK, "class_board_thread.html", gin.H{
+	c.HTML(http.StatusOK, "class_board_thread.tmpl", gin.H{
 		"IsLoggedIn":       true,
 		"Username":         c.GetString("username"),
 		"IsClassProfessor": c.GetBool("isClassProfessor"),

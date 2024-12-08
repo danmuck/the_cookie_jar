@@ -312,7 +312,7 @@ func (game *Game) run() {
 }
 
 func GET_Game(c *gin.Context) {
-	c.HTML(http.StatusOK, "game.html", gin.H{
+	c.HTML(http.StatusOK, "game.tmpl", gin.H{
 		"IsLoggedIn":       true,
 		"Username":         c.GetString("username"),
 		"IsClassProfessor": c.GetBool("isClassProfessor"),

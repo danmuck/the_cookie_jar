@@ -21,7 +21,7 @@ func GET_AccountPFP(c *gin.Context) {
 }
 
 func GET_Account(c *gin.Context) {
-	c.HTML(http.StatusOK, "account.html", gin.H{
+	c.HTML(http.StatusOK, "account.tmpl", gin.H{
 		"IsLoggedIn":         true,
 		"Username":           c.GetString("username"),
 		"ImageUploadMessage": c.Query("imageUploadMessage"),
@@ -52,6 +52,7 @@ func POST_AccountPFPUpload(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, "/account?imageUploadMessage=There+was+a+problem+reading+the+image.")
 		return
 	}
+	
 	imageType := http.DetectContentType(imageBuffer)
 	if imageType == "image/jpeg" {
 		uploadPathFull += ".jpg"
