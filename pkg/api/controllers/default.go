@@ -34,7 +34,7 @@ func GET_Homepage(c *gin.Context) {
 			}
 		}
 
-		c.HTML(http.StatusOK, "classlist.html", gin.H{
+		c.HTML(http.StatusOK, "classlist.tmpl", gin.H{
 			"IsLoggedIn":       true,
 			"Username":         user.Username,
 			"CreatedClassList": createdClassList,
@@ -43,7 +43,7 @@ func GET_Homepage(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "login_register.html", gin.H{
+	c.HTML(http.StatusOK, "login_register.tmpl", gin.H{
 		"IsLoggedIn":             false,
 		"SuccessfullyRegistered": c.Query("register") == "true",
 	})

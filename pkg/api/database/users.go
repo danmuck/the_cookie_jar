@@ -59,6 +59,27 @@ func GetUser(username string) (*models.User, error) {
 }
 
 /*
+Gets user model from the database.
+*/
+func GetUsers() ([]*models.User, error) {
+	var users []*models.User
+	cur, err := GetCollection("users").Find(context.TODO(), gin.H{})
+	if err != nil {
+		return nil, err
+	}
+	for cur.Next(context.TODO()) {
+		var user *models.User
+		if err := cur.Decode(&user); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+
+	}
+
+	return users, err
+}
+
+/*
 Gets path of user's PFP
 */
 func GetUserPFPPath(username string) string {

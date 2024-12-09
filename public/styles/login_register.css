@@ -1,3 +1,12 @@
+.g-recaptcha {
+    margin: 15px 0;
+    width: 90%;
+}
+
+.g-recaptcha > div {
+    margin: 0 auto;
+}
+
 .account_management {
     position: absolute;
     display: flex;

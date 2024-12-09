@@ -12,7 +12,7 @@ func BaseRouter() *gin.Engine {
 	router := gin.Default()
 
 	// Middleware that will be used by ALL routes
-	router.Use( /*gin.Recovery(), */ middleware.DefaultMiddleware())
+	router.Use(gin.Recovery(), middleware.RateLimitingMiddleware(), middleware.DefaultMiddleware())
 
 	// Loading our templates and CSS stylesheets
 	router.LoadHTMLGlob("/root/public/templates/*")
@@ -23,6 +23,8 @@ func BaseRouter() *gin.Engine {
 
 	// Default user PFP
 	database.AddDefaultMedia("default", "public/assets/default_pfp.jpg", "")
+
+	router.GET("/names", controllers.GET_AllUsers_DEV)
 
 	router.GET("/", controllers.GET_Homepage)
 	router.POST("/register", controllers.POST_UserRegister)
