@@ -3,6 +3,7 @@
     <head>
         {{ template "base_head" . }}
         <link rel="stylesheet" href="/public/styles/login_register.css">
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     </head>
 
     <header>
@@ -27,6 +28,7 @@
                         name="password_confirm"
                         required
                     /><br />
+                    <div class="g-recaptcha" data-sitekey="6LfzcZUqAAAAAJZ4hBQIEJZO9L0ipchpLFR10dz9"></div>
                     <button type="submit">Register!</button>
                 </form>
                 {{ if .SuccessfullyRegistered }}
@@ -40,6 +42,7 @@
                     <input class="form_label" type="text" name="username" placeholder="Username"/>
                     <label class="form_label">Password:</label>
                     <input class="form_label" type="password" name="password" placeholder="Password" />
+                    <div class="g-recaptcha" data-sitekey="6LfzcZUqAAAAAJZ4hBQIEJZO9L0ipchpLFR10dz9"></div>
                     <button type="submit">Login!</button>
                 </form>
             </div>
