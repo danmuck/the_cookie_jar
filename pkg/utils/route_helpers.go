@@ -9,7 +9,8 @@ import (
 
 var WebSocketUpgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
-		return true // This is to allow all origins, you might want to check it more carefully in production
+		// This is to allow all origins, you might want to check it more carefully in production
+		return true
 	},
 }
 
@@ -18,4 +19,8 @@ func RouteError(context *gin.Context, errorMessage string) {
 		"IsLoggedIn":   false,
 		"ErrorMessage": errorMessage,
 	})
+}
+
+func RouteIPLimit(context *gin.Context, waitTime int, unit string) {
+	context.String(http.StatusTooManyRequests, "You have sent too many requests, please wait %d %s.", waitTime, unit)
 }
