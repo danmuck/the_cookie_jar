@@ -12,15 +12,33 @@ A Learning Management System (LMS) designed to have ease-of-use and basic profes
 
 After signing up and logging in you can update your profile picture by right clicking your name in the top right corner and navigating to account settings
 
-#### Objective #2 WebSocket Interactions:
+#### Objective #2 WebSocket Interactions
 
 Click the cookie in the top left corner to be brought back to the create classroom screen.
 
 Create a new classroom and then click on the name of your newly created classroom and pick either of two options as both are WebSocket driven.
 
-#### Objective #3 Deployment and Encryption:
+#### Objective #3 Deployment and Encryption
 
 # [Our app is deployed here](https://thecookiejar.gensosekai.com)
+
+## Project Part 3: Finishing Up
+
+Our app is deployed at the link above ^
+
+#### Objective #1 A Sense of Time
+
+After signing up and logging in you can create a classroom followed by clicking on the new classroom name. Start a game by clicking 'Class Game' and then 'Start'. The rounds are timed and this is displayed to the users in real time using websockets.
+
+#### Objective #2 DoS Protection (IP rate limiting)
+
+Implementated as specified in the handout.
+
+#### Objective #3 Creativity and Documentation
+
+Implemented ReCaptcha to verify that users are created by humans and not bots.
+
+Register or login with an account on the homepage, both now require verification to complete.
 
 ### Running the Server
 
