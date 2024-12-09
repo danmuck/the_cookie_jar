@@ -37,6 +37,7 @@
 .login form {
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 
 .form_label {
@@ -55,6 +56,8 @@
     width: 90%;
     padding: 5px;
     border: 2px solid black;
+    text-align: center;
+    border-radius: 20px;
 }
 
 .register form input:focus,

@@ -17,6 +17,7 @@
 .class-list {
     display: flex;
     flex-wrap: wrap;
+    overflow: auto;
 }
 .class-list .class {
     width: 400px;

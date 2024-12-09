@@ -79,6 +79,7 @@
     border-radius: 4px;
     resize: vertical;
     min-height: 16px;
+    overflow: auto;
 }
 .comment-area .comment-btn {
     border-style: solid;
