@@ -12,6 +12,7 @@ func DefaultMiddleware() gin.HandlerFunc {
 		c.Header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
 		c.Header("Pragma", "no-cache")
 		c.Header("Expires", "0")
+		c.Header("X-Client-IP", "X-Real-IP")
 		c.Header("X-Content-Type-Options", "nosniff")
 
 		// If user is logged in get their username, if not no biggie
