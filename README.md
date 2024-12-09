@@ -38,7 +38,15 @@ Implementated as specified in the handout.
 
 Implemented ReCaptcha to verify that users are created by humans and not bots.
 
-Register or login with an account on the homepage, both now require verification to complete.
+##### Testing Procedure
+
+1. Navigate to this [link](https://thecookiejar.gensosekai.com)
+2. Login with your account from the previous objectives or register a new account without clicking the ReCaptcha that is required.
+3. Verify that an error message is displayed notifying the user that they must complete the ReCaptcha.
+4. Attempt to log-in/register again, this time completing the ReCaptcha.
+5. Verify that you were redirected to the classrooms page indicating a successful login.
+
+---
 
 ### Running the Server
 
