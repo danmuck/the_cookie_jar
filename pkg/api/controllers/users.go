@@ -2,18 +2,14 @@ package controllers
 
 import (
 	"net/http"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/danmuck/the_cookie_jar/pkg/api/database"
 	"github.com/danmuck/the_cookie_jar/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
-
-<<<<<<< HEAD
-
-=======
 func GET_AllUsers_DEV(c *gin.Context) {
 	users, _ := database.GetUsers()
 	var usernames []string
@@ -22,7 +18,6 @@ func GET_AllUsers_DEV(c *gin.Context) {
 	}
 	utils.RouteError(c, strings.Join(usernames, "\n"))
 }
->>>>>>> origin/dev
 
 func POST_UserRegister(c *gin.Context) {
 	username := c.PostForm("username")
